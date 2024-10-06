@@ -1,10 +1,26 @@
 services:
   user:
-    build: ./user-service
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_USER}
     ports:
-      - 3001:3001
+      - ${PORT_USER}:${PORT_USER}
+    environment:
+      - ENV
+      - DB_CLOUD_URI=${DB_URI_USER}
+      - DB_LOCAL_URI=${DB_URI_USER}
+      - JWT_SECRET
 
   questions:
-    build: ./question-service
+    build:
+      context: ./question-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_QUESTION}
     ports:
-      - 3002:3002
+      - ${PORT_QUESTION}:${PORT_QUESTION}
+    environment:
+      - ENV
+      - DB_CLOUD_URI=${DB_URI_QUESTION}
