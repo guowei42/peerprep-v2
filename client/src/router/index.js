@@ -6,6 +6,7 @@ import Signup from "../components/Login/Signup";
 import QuestionPage from "../components/QuestionPage/QuestionPage";
 import AuthRedirect from "./AuthRedirect";
 import ProtectedRoute from "./ProtectedRoute";
+import HomePage from "../components/HomePage/HomePage";
 
 export const router = createBrowserRouter([
   {
@@ -17,9 +18,17 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
+            element: <HomePage />,
+          },
+          {
+            path: "/questionpage",
             element: <QuestionPage />,
           },
         ],
+      },
+      {
+        path: "/home",
+        element: <HomePage />,
       },
     ],
   },
