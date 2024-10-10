@@ -29,9 +29,6 @@ app.post("/match", async (req, res) => {
 
   let timeoutId;
 
-  // Introduce a small delay before the first match check
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
   timeoutId = setTimeout(async () => {
     const match = await findMatch(userId, topic, difficulty);
     if (!match) {
@@ -40,14 +37,13 @@ app.post("/match", async (req, res) => {
     }
   }, 30000);
 
-  // Delay the initial match check to give other users a chance to enter the queue
-  await delay(2000); 
-
-  const match = await findMatch(userId, topic, difficulty);
-  if (match) {
-    clearTimeout(timeoutId); // Clear the timeout if we find a match early
-    io.to(match.userId).emit("match", { partnerId: userId });
-    return res.json({ matchFound: true, partnerId: match.userId });
+  while (true) {
+    const match = await findMatch(userId, topic, difficulty);
+    if (match) {
+      clearTimeout(timeoutId);
+      io.to(match.userId).emit("match", { partnerId: userId });
+      return res.json({ matchFound: true, partnerId: match.userId });
+    }
   }
 
 });
