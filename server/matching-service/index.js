@@ -1,78 +1,76 @@
-const express = require("express");
-const redis = require("redis");
 const { Server } = require("socket.io");
+const redis = require("redis");
 const http = require("http");
 
-const app = express();
-const server = http.createServer(app);
+const server = http.createServer();
 const io = new Server(server);
-const client = redis.createClient(); 
+const redisClient = redis.createClient();
 
 async function connectRedis() {
     try {
-      await client.connect(); 
-      console.log("Connected to Redis");
+        await redisClient.connect();
+        console.log("Connected to Redis");
     } catch (err) {
-      console.error("Redis connection error:", err);
+        console.error("Redis connection error:", err);
     }
-  }
-  
-  connectRedis(); 
+}
 
-app.use(express.json());
+connectRedis();
 
-app.post("/match", async (req, res) => {
-  const { userId, topic, difficulty } = req.body;
-  //Key is topic
-  await client.rPush(`${topic}`, JSON.stringify({ userId, difficulty }));
+io.on("connection", (socket) => {
+    console.log(`Client connected: ${socket.id}`);
 
-  let timeoutId;
+    socket.on("requestMatch", async ({ userId, topic, difficulty }) => {
+        await redisClient.rPush(`${topic}`, JSON.stringify({ userId, difficulty }));
 
-  timeoutId = setTimeout(async () => {
-    const match = await findMatch(userId, topic, difficulty);
-    if (!match) {
-      await removeUser(userId, topic, difficulty);
-      return res.json({ matchFound: false, message: "No match found within 30 seconds." });
-    }
-  }, 30000);
+        const timeoutId = setTimeout(async () => {
+            removeUser(userId, topic, difficulty)
+            socket.emit("matchUpdate", { status: "timeout", message: "No match found within 30 seconds." });
+            await redisClient.lRem(`${topic}`, 1, JSON.stringify({ userId, difficulty }));
+        }, 30000);
 
-  while (true) {
-    const match = await findMatch(userId, topic, difficulty);
-    if (match) {
-      clearTimeout(timeoutId);
-      io.to(match.userId).emit("match", { partnerId: userId });
-      return res.json({ matchFound: true, partnerId: match.userId });
-    }
-  }
+        const match = await findMatch(userId, topic, difficulty);
+        if (match) {
+            removeUser(userId, topic, difficulty);
+            clearTimeout(timeoutId); 
+            socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId });    
+        }
+    });
 
+    socket.on("disconnect", () => {
+        console.log(`Client disconnected: ${socket.id}`);
+    });
 });
 
 async function removeUser(userId, topic, difficulty) {
   const user = '{"userId":"' + userId + '","difficulty":"' + difficulty + '"}'
-  await client.lRem(`${topic}`, 1, user);
+  await redisClient.lRem(`${topic}`, 1, user);
 }
 
 async function findMatch(userId, topic, difficulty) {
-  const users = await client.lRange(`${topic}`, 0, -1);
+    const users = await redisClient.lRange(`${topic}`, 0, -1);
 
-  for (const user of users) {
-    const parsedUser = JSON.parse(user);
-    if (parsedUser.userId !== userId && parsedUser.difficulty === difficulty) {
-      await client.lRem(`${topic}`, 1, user); // Remove matched user
-      return parsedUser;
+    for (const user of users) {
+        const parsedUser = JSON.parse(user);
+        if (parsedUser.userId !== userId && parsedUser.difficulty === difficulty) {
+            await redisClient.lRem(`${topic}`, 1, user); 
+            return parsedUser;
+        }
     }
-  }
-  //If no difficulty and topic match, just match by topic.
-  for (const user of users) {
-    const parsedUser = JSON.parse(user);
-    if (parsedUser.userId !== userId) {
-      await client.lRem(`${topic}`, 1, user); // Remove matched user
-      return parsedUser;
+
+    // If no difficulty match, match by topic
+    for (const user of users) {
+        const parsedUser = JSON.parse(user);
+        if (parsedUser.userId !== userId) {
+            await redisClient.lRem(`${topic}`, 1, user); 
+            return parsedUser;
+        }
     }
-  }
-  return null;
+
+    return null;
 }
 
+// Start WebSocket server
 server.listen(3003, () => {
-  console.log("Server is running on http://localhost:3003");
+    console.log("WebSocket server running on http://localhost:3003");
 });
