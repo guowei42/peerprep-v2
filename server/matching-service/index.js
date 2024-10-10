@@ -21,6 +21,10 @@ io.on("connection", (socket) => {
     console.log(`Client connected: ${socket.id}`);
 
     socket.on("requestMatch", async ({ userId, topic, difficulty }) => {
+        socket.userId = userId;
+        socket.topic = topic;
+        socket.difficulty = difficulty;
+
         await redisClient.rPush(`${topic}`, JSON.stringify({ userId, difficulty }));
 
         const timeoutId = setTimeout(async () => {
@@ -31,16 +35,31 @@ io.on("connection", (socket) => {
 
         const match = await findMatch(userId, topic, difficulty);
         if (match) {
-            removeUser(userId, topic, difficulty);
             clearTimeout(timeoutId); 
-            socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId });    
+            socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId }); 
+            const matchedSocket = findSocketByUserId(match.userId);
+            if (matchedSocket) {
+                matchedSocket.emit("matchUpdate", { status: "match_found", userId: match.userId, partnerId: userId });
+            }
+            await removeUser(userId, topic, difficulty);   
         }
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
+        const { userId, topic, difficulty } = socket;
+        await removeUser(userId, topic, difficulty);
         console.log(`Client disconnected: ${socket.id}`);
     });
 });
+
+function findSocketByUserId(userId) {
+    for (let [id, socket] of io.of("/").sockets) {
+        if (socket.userId === userId) {
+            return socket;
+        }
+    }
+    return null;
+}
 
 async function removeUser(userId, topic, difficulty) {
   const user = '{"userId":"' + userId + '","difficulty":"' + difficulty + '"}'
