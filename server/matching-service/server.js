@@ -95,6 +95,6 @@ async function findMatch(userId, topic, difficulty) {
 }
 
 // Start WebSocket server
-server.listen(port, () => {
+server.listen(port, "localhost", () => {
     console.log("Matching service WebSocket listening on port " + port);
 });
