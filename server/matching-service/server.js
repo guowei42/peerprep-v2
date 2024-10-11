@@ -2,9 +2,14 @@ const { Server } = require("socket.io");
 const redis = require("redis");
 const http = require("http");
 
+const port = process.env.PORT || 3003;
+const redis_url = process.env.REDIS_URL;
+
 const server = http.createServer();
 const io = new Server(server);
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({
+    url: redis_url
+  });
 
 async function connectRedis() {
     try {
@@ -90,6 +95,6 @@ async function findMatch(userId, topic, difficulty) {
 }
 
 // Start WebSocket server
-server.listen(3003, () => {
-    console.log("WebSocket server running on http://localhost:3003");
+server.listen(port, () => {
+    console.log("Matching service WebSocket listening on port " + port);
 });
