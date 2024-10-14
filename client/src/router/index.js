@@ -1,12 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import Login from "../components/Login/Login";
 import Logout from "../components/Login/Logout";
-import Signup from "../components/Login/Signup";
 import QuestionPage from "../components/QuestionPage/QuestionPage";
 import AuthRedirect from "./AuthRedirect";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../components/HomePage/HomePage";
+import LoginWrapper from "../components/Login/LoginWrapper";
+import Login from "../components/Login/components/Login";
+import Signup from "../components/Login/components/Signup";
 
 export const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
             element: <QuestionPage />,
           },
         ],
-      }
+      },
     ],
   },
   {
@@ -33,11 +34,19 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/login",
-        element: <Login />,
+        element: (
+          <LoginWrapper>
+            <Login />
+          </LoginWrapper>
+        ),
       },
       {
         path: "/signup",
-        element: <Signup />,
+        element: (
+          <LoginWrapper>
+            <Signup />
+          </LoginWrapper>
+        ),
       },
     ],
   },

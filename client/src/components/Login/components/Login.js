@@ -1,20 +1,17 @@
 import {
   Box,
   Button,
-  Container,
   Link,
-  TextField,
-  Typography,
+  Stack,
+  Typography
 } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
 import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
-import { ReactComponent as Background } from "../../assets/background.svg";
-import { ReactComponent as Logo } from "../../assets/logo.svg";
-import "./style/login.css";
-import { SVC_ENDPOINTS } from "../../consts/api";
+import { SVC_ENDPOINTS } from "../../../consts/api";
+import { CustomInput, LoginBox } from "../LoginWrapper";
 
 function Login() {
   const [emailError, setEmailError] = useState(false);
@@ -72,22 +69,25 @@ function Login() {
       )}
       {missingFields && <Alert severity="error">Missing fields!</Alert>}
       {databaseError && <Alert severity="error">DatabaseError!</Alert>}
-      <Container id="login-container">
-        <Box id="login-box">
+      <Stack
+        direction={"row"}
+        height={"100vh"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <LoginBox>
           <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>LOGIN</Box>
-          <TextField
+          <CustomInput
             label="Email"
             required
             error={emailError}
             helperText={emailError ? "Please enter a valid email" : ""}
-            className="login-input"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <TextField
+          <CustomInput
             label="Password"
             type="password"
             required
-            className="login-input"
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -95,17 +95,13 @@ function Login() {
               }
             }}
           />
-          <Box id="login-footer">
+          <Stack alignItems={"center"}>
             <RouterLink>
-              <Button
-                variant="contained"
-                id="login-button"
-                onClick={handleLogin}
-              >
+              <Button variant="contained" onClick={handleLogin}>
                 Login
               </Button>
             </RouterLink>
-            <Box id="login-to-register">
+            <Stack alignItems={"center"} marginTop={"10px"}>
               <Typography variant="body2">Don't have an account?</Typography>
               <Typography variant="body2">
                 Sign up{" "}
@@ -113,35 +109,10 @@ function Login() {
                   here
                 </Link>
               </Typography>
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            position: "relative",
-          }}
-        >
-          <Box
-            sx={{
-              zIndex: 1,
-            }}
-          >
-            <Background />
-          </Box>
-
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 2,
-            }}
-          >
-            <Logo />
-          </Box>
-        </Box>
-      </Container>
+            </Stack>
+          </Stack>
+        </LoginBox>
+      </Stack>
     </div>
   );
 }
