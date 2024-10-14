@@ -57,54 +57,50 @@ function Login() {
     }
   };
   return (
-    <div>
-      <Stack direction={"column"}>
-        <LoginBox>
-          <Box position={"absolute"} top={"0"} width={"100%"}>
-            {invalidEmailError && (
-              <Alert severity="error">Incorrect email or password!</Alert>
-            )}
-            {missingFields && <Alert severity="error">Missing fields!</Alert>}
-            {databaseError && <Alert severity="error">DatabaseError!</Alert>}
-          </Box>
-          <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>LOGIN</Box>
-          <CustomInput
-            label="Email"
-            required
-            error={emailError}
-            helperText={emailError ? "Please enter a valid email" : ""}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <CustomInput
-            label="Password"
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleLogin();
-              }
-            }}
-          />
-          <Stack alignItems={"center"}>
-            <RouterLink>
-              <Button variant="contained" onClick={handleLogin}>
-                Login
-              </Button>
-            </RouterLink>
-            <Stack alignItems={"center"} marginTop={"10px"}>
-              <Typography variant="body2">Don't have an account?</Typography>
-              <Typography variant="body2">
-                Sign up{" "}
-                <Link component={RouterLink} to="/signup">
-                  here
-                </Link>
-              </Typography>
-            </Stack>
-          </Stack>
-        </LoginBox>
+    <LoginBox>
+      <Box position={"absolute"} top={"0"} width={"100%"}>
+        {invalidEmailError && (
+          <Alert severity="error">Incorrect email or password!</Alert>
+        )}
+        {missingFields && <Alert severity="error">Missing fields!</Alert>}
+        {databaseError && <Alert severity="error">DatabaseError!</Alert>}
+      </Box>
+      <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>LOGIN</Box>
+      <CustomInput
+        label="Email"
+        required
+        error={emailError}
+        helperText={emailError ? "Please enter a valid email" : ""}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <CustomInput
+        label="Password"
+        type="password"
+        required
+        onChange={(e) => setPassword(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleLogin();
+          }
+        }}
+      />
+      <Stack alignItems={"center"}>
+        <RouterLink>
+          <Button variant="contained" onClick={handleLogin}>
+            Login
+          </Button>
+        </RouterLink>
+        <Stack alignItems={"center"} marginTop={"10px"}>
+          <Typography variant="body2">Don't have an account?</Typography>
+          <Typography variant="body2">
+            Sign up{" "}
+            <Link component={RouterLink} to="/signup">
+              here
+            </Link>
+          </Typography>
+        </Stack>
       </Stack>
-    </div>
+    </LoginBox>
   );
 }
 

@@ -51,53 +51,49 @@ function Signup() {
     }
   };
   return (
-    <div>
-      <Stack direction={"column"}>
-        <LoginBox>
-          <Box position={"absolute"} top={"0"} width={"100%"}>
-            {missingFields && <Alert severity="error">Missing fields!</Alert>}
-            {duplicateError && (
-              <Alert severity="error">
-                Duplicate username or email encountered!
-              </Alert>
-            )}
-            {databaseError && (
-              <Alert severity="error">Database or server error!</Alert>
-            )}
-          </Box>
-          <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>SIGNUP</Box>
-          <CustomInput
-            label="Username"
-            required
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <CustomInput
-            label="Email"
-            required
-            error={emailError}
-            helperText={emailError ? "Please enter a valid email" : ""}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <CustomInput
-            label="Password"
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSignup();
-              }
-            }}
-          />
+    <LoginBox>
+      <Box position={"absolute"} top={"0"} width={"100%"}>
+        {missingFields && <Alert severity="error">Missing fields!</Alert>}
+        {duplicateError && (
+          <Alert severity="error">
+            Duplicate username or email encountered!
+          </Alert>
+        )}
+        {databaseError && (
+          <Alert severity="error">Database or server error!</Alert>
+        )}
+      </Box>
+      <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>SIGNUP</Box>
+      <CustomInput
+        label="Username"
+        required
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <CustomInput
+        label="Email"
+        required
+        error={emailError}
+        helperText={emailError ? "Please enter a valid email" : ""}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <CustomInput
+        label="Password"
+        type="password"
+        required
+        onChange={(e) => setPassword(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSignup();
+          }
+        }}
+      />
 
-          <RouterLink>
-            <Button variant="contained" onClick={handleSignup}>
-              Signup
-            </Button>
-          </RouterLink>
-        </LoginBox>
-      </Stack>
-    </div>
+      <RouterLink>
+        <Button variant="contained" onClick={handleSignup}>
+          Signup
+        </Button>
+      </RouterLink>
+    </LoginBox>
   );
 }
 
