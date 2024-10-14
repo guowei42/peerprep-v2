@@ -10,7 +10,7 @@ function HomePage() {
 
   return (
     <>
-    <Button onClick={() => navigate("/questionpage")}>Cliek</Button>
+    <Button onClick={() => navigate("/questionpage")}>To Question Page</Button>
     <Grid2 container spacing={2} size={12} sx={{ flex: "1 1 auto", padding: "35px 0px 35px 0px" }}>
       <Grid2 container direction={"column"} size={7} >
         <Grid2 sx={{ flexGrow: VERTICAL_DISTRIBUTION[0] }}>
