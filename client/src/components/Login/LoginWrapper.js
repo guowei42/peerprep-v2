@@ -9,6 +9,7 @@ export const CustomInput = styled(TextField)({
 
 export const LoginBox = styled(Box)({
   display: "flex",
+  position: "relative",
   flexDirection: "column",
   justifyContent: "space-evenly",
   height: "580px",

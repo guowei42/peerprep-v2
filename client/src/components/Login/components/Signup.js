@@ -52,20 +52,19 @@ function Signup() {
   };
   return (
     <div>
-      {missingFields && <Alert severity="error">Missing fields!</Alert>}
-      {duplicateError && (
-        <Alert severity="error">Duplicate username or email encountered!</Alert>
-      )}
-      {databaseError && (
-        <Alert severity="error">Database or server error!</Alert>
-      )}
-      <Stack
-        direction={"row"}
-        height={"100vh"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
+      <Stack direction={"column"}>
         <LoginBox>
+          <Box position={"absolute"} top={"0"} width={"100%"}>
+            {missingFields && <Alert severity="error">Missing fields!</Alert>}
+            {duplicateError && (
+              <Alert severity="error">
+                Duplicate username or email encountered!
+              </Alert>
+            )}
+            {databaseError && (
+              <Alert severity="error">Database or server error!</Alert>
+            )}
+          </Box>
           <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>SIGNUP</Box>
           <CustomInput
             label="Username"

@@ -1,10 +1,4 @@
-import {
-  Box,
-  Button,
-  Link,
-  Stack,
-  Typography
-} from "@mui/material";
+import { Box, Button, Link, Stack, Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
 import React, { useState } from "react";
@@ -64,18 +58,15 @@ function Login() {
   };
   return (
     <div>
-      {invalidEmailError && (
-        <Alert severity="error">Incorrect email or password!</Alert>
-      )}
-      {missingFields && <Alert severity="error">Missing fields!</Alert>}
-      {databaseError && <Alert severity="error">DatabaseError!</Alert>}
-      <Stack
-        direction={"row"}
-        height={"100vh"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
+      <Stack direction={"column"}>
         <LoginBox>
+          <Box position={"absolute"} top={"0"} width={"100%"}>
+            {invalidEmailError && (
+              <Alert severity="error">Incorrect email or password!</Alert>
+            )}
+            {missingFields && <Alert severity="error">Missing fields!</Alert>}
+            {databaseError && <Alert severity="error">DatabaseError!</Alert>}
+          </Box>
           <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>LOGIN</Box>
           <CustomInput
             label="Email"
