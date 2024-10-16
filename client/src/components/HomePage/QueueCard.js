@@ -11,16 +11,30 @@ import {
   Stepper,
   ToggleButton,
   ToggleButtonGroup,
+  styled,
 } from "@mui/material";
+import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SVC_ENDPOINTS } from "../../consts/api";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
+const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  display: "flex", 
+  flexWrap: "wrap", 
+  gap: 1,
+  overflow: "auto",
+  [`& .${toggleButtonGroupClasses.grouped}`]: {
+    margin: theme.spacing(0.5),
+    border: "1px solid black",
+    borderRadius: "50px",
+  },
+}));
+
 function QueueCard() {
   const [activeStep, setActiveStep] = useState(0);
-  const [difficulty, setDifficulty] = useState("easy");
+  const [difficulty, setDifficulty] = useState("");
   const [topic, setTopic] = useState("");
   const [questionCategories, setQuestionCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -100,17 +114,19 @@ function QueueCard() {
             {loading ? (
               <CircularProgress />
             ) : (
-              <ToggleButtonGroup
+              <CustomToggleGroup
                 value={topic}
                 onChange={handleTopicChange}
                 exclusive
-                sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
               >
                 {questionCategories.map((category) => {
-                  return <ToggleButton>{category.category}</ToggleButton>;
+                  return (
+                    <ToggleButton value={category}>
+                      {category.category}
+                    </ToggleButton>
+                  );
                 })}
-                <ToggleButton>Test</ToggleButton>
-              </ToggleButtonGroup>
+              </CustomToggleGroup>
             )}
           </Box>
         )}
