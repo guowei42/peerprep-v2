@@ -1,6 +1,6 @@
-import { Button, Grid2, Paper, styled } from "@mui/material";
-import QueueCard from "./QueueCard";
+import { Button, Grid2, styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import QueueCard from "./QueueCard";
 
 // top-left, top-right, bottom-right, bottom-left
 const FlexGrid = styled(Grid2)(({ flexAmount }) => ({
@@ -48,7 +48,3 @@ function HomePage() {
 }
 
 export default HomePage;
-
-{
-  /*  */
-}
