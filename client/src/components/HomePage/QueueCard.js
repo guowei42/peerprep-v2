@@ -20,8 +20,15 @@ import { useEffect, useState } from "react";
 import { SVC_ENDPOINTS } from "../../consts/api";
 import { socket } from "../../socket";
 import Cookies from "universal-cookie";
+import CircularWithValueLabel from "./CircularWithValueLabel";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
+
+const BlurredButton = styled(Button)(({ theme }) => ({
+  pointerEvents: 'none',  
+  color: theme.palette.grey[800], 
+  opacity: 0.5
+}));
 
 const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   display: "flex",
@@ -36,6 +43,7 @@ const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 }));
 
 function QueueCard() {
+
   const [activeStep, setActiveStep] = useState(0);
   const [difficulty, setDifficulty] = useState("");
   const [topic, setTopic] = useState("");
@@ -44,6 +52,8 @@ function QueueCard() {
   const [queueLoading, setQueueLoading] = useState(false);
   const [queueState, setQueueState] = useState({});
   const [error, setError] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [timer, setTimer] = useState(null);
 
   const handleDifficultyChange = (_, nextView) => {
     setDifficulty(nextView);
@@ -89,8 +99,13 @@ function QueueCard() {
       socket.emit("connection");
       console.log("User connected to socket");
     }
-
+    setProgress(0);
     setQueueLoading(true);
+    
+    clearInterval(timer);
+    const timerId = setInterval(() => {setProgress((prevProgress) => (prevProgress >= 100 ? 100 : prevProgress + 10));
+    }, 3000);
+    setTimer(timerId)
     const cookies = new Cookies();
     const userId = cookies.get("userId");
     socket.emit("requestMatch", {
@@ -100,6 +115,7 @@ function QueueCard() {
     });
 
     socket.on("matchUpdate", (msg) => {
+      clearInterval(timerId);
       setQueueLoading(false);
       console.log("Message from match: ", msg);
       setQueueState(msg);
@@ -108,6 +124,10 @@ function QueueCard() {
 
   const handleEnd = () => {
     socket.disconnect();
+    setQueueLoading(false);
+    setQueueState({});
+    setProgress(0);
+    clearInterval(timer);
   };
 
   useEffect(() => {
@@ -179,7 +199,7 @@ function QueueCard() {
         )}
         {activeStep === 2 && (
           <Box>
-            {queueLoading && <Typography variant="h3">Finding You A Match! :D</Typography>}
+            {queueLoading && <div><Typography variant="h3">Finding You A Match! :D</Typography><CircularWithValueLabel value={progress}/></div>}
             {!queueLoading && queueState.status === "timeout" && (
               <Typography variant="h3">No Match Found! D:</Typography>
             )}
@@ -188,8 +208,12 @@ function QueueCard() {
                 Queued with: {queueState.partnerId}
               </Typography>
             )}
-            <Button onClick={handleStartQueue}>Start Queue</Button>
-            <Button onClick={handleEnd}>Exit Socket</Button>
+            {queueLoading ? (
+              <BlurredButton>Start</BlurredButton>
+            ) : (
+              <Button onClick={handleStartQueue}>Start</Button>
+            )}
+            <Button onClick={handleEnd}>Quit</Button>
           </Box>
         )}
         {error && <Typography color="error">{error}</Typography>}

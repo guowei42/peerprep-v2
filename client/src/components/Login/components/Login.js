@@ -8,6 +8,7 @@ import { SVC_ENDPOINTS } from "../../../consts/api";
 import { CustomInput, LoginBox } from "../LoginWrapper";
 
 function Login() {
+  
   const [emailError, setEmailError] = useState(false);
   const [invalidEmailError, setInvalidEmailError] = useState(false);
   const [missingFields, setMissingFields] = useState(false);
