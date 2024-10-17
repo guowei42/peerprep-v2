@@ -6,7 +6,11 @@ const port = process.env.PORT || 3003;
 const redis_url = process.env.REDIS_URL;
 
 const server = http.createServer();
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000"
+  }
+});
 const redisClient = redis.createClient({
     url: redis_url
   });

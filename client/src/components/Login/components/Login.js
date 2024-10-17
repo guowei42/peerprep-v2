@@ -34,6 +34,7 @@ function Login() {
         );
         if (response.status === 200) {
           const cookies = new Cookies();
+          cookies.set("userId", response.data.data.id);
           cookies.set("accessToken", response.data.data.accessToken, {
             path: "/",
           });

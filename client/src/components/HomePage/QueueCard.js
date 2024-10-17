@@ -19,6 +19,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SVC_ENDPOINTS } from "../../consts/api";
 import { socket } from "../../socket";
+import Cookies from "universal-cookie";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
@@ -42,6 +43,7 @@ function QueueCard() {
   const [loading, setLoading] = useState(false);
   const [queueLoading, setQueueLoading] = useState(false);
   const [queueState, setQueueState] = useState({});
+  const [error, setError] = useState("");
 
   const handleDifficultyChange = (_, nextView) => {
     setDifficulty(nextView);
@@ -49,9 +51,16 @@ function QueueCard() {
 
   const handleTopicChange = (_, nextView) => {
     setTopic(nextView);
+    if (nextView) {
+      setError(""); 
+    }
   };
 
   const handleNext = () => {
+    if (activeStep === 1 && !topic) {
+      setError("Please select a topic.");
+      return;
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -82,15 +91,17 @@ function QueueCard() {
     }
 
     setQueueLoading(true);
+    const cookies = new Cookies();
+    const userId = cookies.get("userId");
     socket.emit("requestMatch", {
-      userId: crypto.randomUUID(),
+      userId: userId,
       topic: topic,
       difficulty: difficulty,
     });
 
     socket.on("matchUpdate", (msg) => {
       setQueueLoading(false);
-      console.log("Message from match: ", msg.message);
+      console.log("Message from match: ", msg);
       setQueueState(msg);
     });
   };
@@ -110,7 +121,7 @@ function QueueCard() {
     if (activeStep === 1 && questionCategories.length === 0) {
       getCategories();
     }
-  }, [activeStep]);
+  }, [activeStep, questionCategories]);
 
   return (
     <Card
@@ -181,6 +192,7 @@ function QueueCard() {
             <Button onClick={handleEnd}>Exit Socket</Button>
           </Box>
         )}
+        {error && <Typography color="error">{error}</Typography>}
       </CardContent>
       <CardActions sx={{ justifyContent: "space-between" }}>
         <Button
