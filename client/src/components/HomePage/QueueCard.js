@@ -11,18 +11,20 @@ import {
   Stepper,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
   styled,
 } from "@mui/material";
 import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SVC_ENDPOINTS } from "../../consts/api";
+import { socket } from "../../socket";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
 const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-  display: "flex", 
-  flexWrap: "wrap", 
+  display: "flex",
+  flexWrap: "wrap",
   gap: 1,
   overflow: "auto",
   [`& .${toggleButtonGroupClasses.grouped}`]: {
@@ -38,6 +40,8 @@ function QueueCard() {
   const [topic, setTopic] = useState("");
   const [questionCategories, setQuestionCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [queueLoading, setQueueLoading] = useState(false);
+  const [queueState, setQueueState] = useState({});
 
   const handleDifficultyChange = (_, nextView) => {
     setDifficulty(nextView);
@@ -62,7 +66,7 @@ function QueueCard() {
         `${SVC_ENDPOINTS.question}/questions/categories/unique`
       );
       if (response.status === 200) {
-        setQuestionCategories(response.data);
+        setQuestionCategories(Array.from(response.data).sort());
       }
     } catch (error) {
       console.log(error);
@@ -70,8 +74,40 @@ function QueueCard() {
     setLoading(false);
   };
 
+  const handleStartQueue = () => {
+    if (!socket.connected) {
+      socket.connect();
+      socket.emit("connection");
+      console.log("User connected to socket");
+    }
+
+    setQueueLoading(true);
+    socket.emit("requestMatch", {
+      userId: crypto.randomUUID(),
+      topic: topic,
+      difficulty: difficulty,
+    });
+
+    socket.on("matchUpdate", (msg) => {
+      setQueueLoading(false);
+      console.log("Message from match: ", msg.message);
+      setQueueState(msg);
+    });
+  };
+
+  const handleEnd = () => {
+    socket.disconnect();
+  };
+
   useEffect(() => {
-    if (activeStep === 1) {
+    return () => {
+      socket.off("matchUpdate");
+      socket.off("disconnect");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (activeStep === 1 && questionCategories.length === 0) {
       getCategories();
     }
   }, [activeStep]);
@@ -128,6 +164,21 @@ function QueueCard() {
                 })}
               </CustomToggleGroup>
             )}
+          </Box>
+        )}
+        {activeStep === 2 && (
+          <Box>
+            {queueLoading && <Typography variant="h3">Finding You A Match! :D</Typography>}
+            {!queueLoading && queueState.status === "timeout" && (
+              <Typography variant="h3">No Match Found! D:</Typography>
+            )}
+            {!queueLoading && queueState.status === "match_found" && (
+              <Typography variant="h3">
+                Queued with: {queueState.partnerId}
+              </Typography>
+            )}
+            <Button onClick={handleStartQueue}>Start Queue</Button>
+            <Button onClick={handleEnd}>Exit Socket</Button>
           </Box>
         )}
       </CardContent>
