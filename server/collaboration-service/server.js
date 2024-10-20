@@ -24,5 +24,5 @@ io.on("connection", (socket) => {
 
 // Start WebSocket server
 server.listen(port, () => {
-    console.log("Matching service WebSocket listening on port " + port);
+    console.log("Collaboration service WebSocket listening on port " + port);
 });
