@@ -75,6 +75,7 @@ function QueueCard() {
   };
 
   const handleBack = () => {
+    setError("");
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
