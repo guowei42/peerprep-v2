@@ -25,7 +25,7 @@ function CircularProgressWithLabel(props) {
           component="div"
           sx={{ color: 'text.secondary' }}
         >
-          {`${Math.round(props.value)}%`}
+          {`0:${props.value}`}
         </Typography>
       </Box>
     </Box>
@@ -36,7 +36,7 @@ CircularProgressWithLabel.propTypes = {
   /**
    * The value of the progress indicator for the determinate variant.
    * Value between 0 and 100.
-   * @default 0
+   * @default 30
    */
   value: PropTypes.number.isRequired,
 };

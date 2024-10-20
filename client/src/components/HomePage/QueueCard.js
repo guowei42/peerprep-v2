@@ -99,12 +99,12 @@ function QueueCard() {
       socket.emit("connection");
       console.log("User connected to socket");
     }
-    setProgress(0);
+    setProgress(30);
     setQueueLoading(true);
     
     clearInterval(timer);
-    const timerId = setInterval(() => {setProgress((prevProgress) => (prevProgress >= 100 ? 100 : prevProgress + 10));
-    }, 3000);
+    const timerId = setInterval(() => {setProgress((prevProgress) => (prevProgress <= 0 ? 0 : prevProgress - 1));
+    }, 1000);
     setTimer(timerId)
     const cookies = new Cookies();
     const userId = cookies.get("userId");
@@ -126,7 +126,7 @@ function QueueCard() {
     socket.disconnect();
     setQueueLoading(false);
     setQueueState({});
-    setProgress(0);
+    setProgress(30);
     clearInterval(timer);
   };
 
