@@ -45,10 +45,11 @@ io.on("connection", (socket) => {
         const match = await findMatch(userId, topic, difficulty);
         if (match) {
             clearTimeout(timeoutId); 
-            socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId }); 
+            const room_id = uuidv4();
+            socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId, roomId: room_id }); 
             const matchedSocket = findSocketByUserId(match.userId);
             if (matchedSocket) {
-                matchedSocket.emit("matchUpdate", { status: "match_found", userId: match.userId, partnerId: userId });
+                matchedSocket.emit("matchUpdate", { status: "match_found", userId: match.userId, partnerId: userId, roomId:room_id });
             }
             await removeUser(userId, topic, difficulty);   
         }
