@@ -7,7 +7,12 @@ export const AuthContext = createContext({
   accessToken: "",
   getAccessToken: () => {
     return new Cookies().get("accessToken");
-  }
+  },
+  logout: () => {
+    const cookies = new Cookies();
+    cookies.remove("accessToken", { path: "/" });
+  },
+  isLoading: true
 });
 
 export const useAuth = () => useContext(AuthContext);

@@ -7,15 +7,18 @@ import { SVC_ENDPOINTS } from "../consts/api";
 function AuthProvider({ children }) {
   const auth = useAuth();
 
+  const [isLoading, setIsLoading] = useState(auth.isLoading);
   const [isAuthenticated, setIsAuthenticated] = useState(auth.isAuthenticated);
   const [accessToken, setAccessToken] = useState(auth.accessToken);
 
   const checkIsAuthenticated = useCallback(async () => {
+    setIsLoading(true);
     try {
       const token = auth.getAccessToken();
 
       if (!token) {
         setIsAuthenticated(false);
+        setIsLoading(false)
         return;
       }
       const response = await axios.get(
@@ -30,6 +33,7 @@ function AuthProvider({ children }) {
         setIsAuthenticated(true);
         setAccessToken(token);
       }
+      
     } catch (error) {
       if (
         error.response &&
@@ -38,6 +42,7 @@ function AuthProvider({ children }) {
         setIsAuthenticated(false);
       }
     }
+    setIsLoading(false)
   }, [auth]);
 
   const handleLogout = useCallback(() => {
@@ -58,6 +63,7 @@ function AuthProvider({ children }) {
     accessToken: accessToken,
     checkIsAuthenticated: checkIsAuthenticated,
     logout: handleLogout,
+    isLoading: isLoading
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,7 +1,6 @@
-import { Button, CircularProgress  } from "@mui/material";
+import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./style/header.css";
 import { useAuth } from "../../hooks/useAuth";
 
 function Header() {
@@ -17,9 +16,9 @@ function Header() {
   }, [checkIsAuthenticated]);
 
   return (
-    <div id="landing-header">
+    <Stack direction={"row"} justifyContent={"space-between"} padding={"0 10px 0 10px"}>
       <h1>PeerPrep</h1>
-      <div id="button-header">
+      <Box display={"flex"} alignItems={"center"}>
         {loading ? (
           <CircularProgress />
         ) : isAuthenticated ? (
@@ -31,8 +30,8 @@ function Header() {
             <Button variant="contained">Login</Button>
           </Link>
         )}
-      </div>
-    </div>
+      </Box>
+    </Stack>
   );
 }
 

@@ -23,7 +23,10 @@ docker compose -f docker-compose.local.yml up -d
 
 ## Default port numbers
 
-| **Service** | **Port** |
-| ----------- | -------- |
-| User        | 3001     |
-| Questions   | 3002     |
+These can be modified in `.env`.
+
+| **Service**      | **Port** |
+| ---------------- | -------- |
+| User             | 3001     |
+| Questions        | 3002     |
+| Matching         | 3003     |

@@ -23,6 +23,49 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+// get unique categories
+router.get("/categories/unique", async (req, res) => {
+    try {
+        const uniqueCategories = await Question.aggregate(
+            [
+                // remove commas
+                {
+                    $project: {
+                        categories: { $split: ["$categories", ","]}
+                    }
+                },
+                // change array to individual entries
+                {
+                    $unwind: "$categories"
+                },
+                // trim start and ending white space
+                {
+                    $project: {
+                        categories: {$trim: {input: "$categories"}}
+                    }
+                },
+                // essentially change into a Set, ensures uniqueness
+                {
+                    $group: {
+                        _id: "$categories"
+                    }
+                },
+                // return without _id
+                {
+                    $project: {
+                        _id: 0,
+                        category: "$_id"
+                    }
+                }
+
+            ]
+        );
+        res.status(200).json(uniqueCategories);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // get easy
 router.get("/complexity/easy", async (req, res) => {
     try {
