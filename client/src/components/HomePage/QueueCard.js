@@ -205,7 +205,7 @@ function QueueCard() {
               <Typography variant="h3">No Match Found! D:</Typography>
             )}
             {!queueLoading && queueState.status === "match_found" && (
-              <Typography variant="h3">
+              <Typography variant="h4">
                 Queued with: {queueState.partnerId}
               </Typography>
             )}
