@@ -1,0 +1,43 @@
+name: local-mongo-instance
+services:
+  user:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_USER}
+    ports:
+      - ${PORT_USER}:${PORT_USER}
+    environment:
+      - ENV
+      - DB_CLOUD_URI=${DB_URI_USER}
+      - DB_LOCAL_URI=${DB_URI_USER}
+      - JWT_SECRET
+    depends_on:
+      - mongo
+
+  questions:
+    build:
+      context: ./question-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_QUESTION}
+    ports:
+      - ${PORT_QUESTION}:${PORT_QUESTION}
+    environment:
+      - ENV
+      - DB_CLOUD_URI=${DB_URI_QUESTION}
+    depends_on:
+      - mongo
+  
+  mongo:
+    container_name: mongo
+    image: mongo
+    command: mongod --port 27018
+    ports:
+      - "27018:27018"
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo:

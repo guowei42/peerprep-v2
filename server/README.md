@@ -15,6 +15,12 @@ docker compose build
 docker compose up -d
 ```
 
+To run Mongodb through a local instance:
+```sh
+docker compose -f docker-compose.local.yml build
+docker compose -f docker-compose.local.yml up -d
+```
+
 ## Default port numbers
 
 These can be modified in `.env`.
