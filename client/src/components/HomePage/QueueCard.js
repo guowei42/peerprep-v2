@@ -21,6 +21,7 @@ import { SVC_ENDPOINTS } from "../../consts/api";
 import { socket } from "../../socket";
 import Cookies from "universal-cookie";
 import CircularWithValueLabel from "./CircularWithValueLabel";
+import { DIFFICULTY } from "../../consts/difficulty";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
@@ -45,7 +46,7 @@ const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 function QueueCard() {
 
   const [activeStep, setActiveStep] = useState(0);
-  const [difficulty, setDifficulty] = useState("");
+  const [difficulty, setDifficulty] = useState(DIFFICULTY.easy);
   const [topic, setTopic] = useState("");
   const [questionCategories, setQuestionCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -86,7 +87,8 @@ function QueueCard() {
         `${SVC_ENDPOINTS.question}/questions/categories/unique`
       );
       if (response.status === 200) {
-        setQuestionCategories(Array.from(response.data).sort());
+        console.log(response.data.map((x) => x.category))
+        setQuestionCategories(Array.from(response.data.map((x) => x.category)).sort());
       }
     } catch (error) {
       console.log(error);
@@ -146,7 +148,7 @@ function QueueCard() {
 
   return (
     <Card
-      outlined
+      variant="outlined"
       sx={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
     >
       <CardContent>
@@ -166,13 +168,13 @@ function QueueCard() {
             onChange={handleDifficultyChange}
             exclusive
           >
-            <ToggleButton value="easy" aria-label="easy">
+            <ToggleButton value={DIFFICULTY.easy} aria-label={DIFFICULTY.easy}>
               Easy
             </ToggleButton>
-            <ToggleButton value="medium" aria-label="medium">
+            <ToggleButton value={DIFFICULTY.medium} aria-label={DIFFICULTY.medium}>
               Medium
             </ToggleButton>
-            <ToggleButton value="hard" aria-label="hard">
+            <ToggleButton value={DIFFICULTY.hard} aria-label={DIFFICULTY.hard}>
               Hard
             </ToggleButton>
           </ToggleButtonGroup>
@@ -187,10 +189,10 @@ function QueueCard() {
                 onChange={handleTopicChange}
                 exclusive
               >
-                {questionCategories.map((category) => {
+                {questionCategories.map((category, index) => {
                   return (
-                    <ToggleButton value={category}>
-                      {category.category}
+                    <ToggleButton key={`cat${index}`} value={category}>
+                      {category}
                     </ToggleButton>
                   );
                 })}
@@ -229,7 +231,7 @@ function QueueCard() {
           Back
         </Button>
         {activeStep < steps.length - 1 && (
-          <Button onClick={handleNext}>Next</Button>
+          <Button disabled={topic === ""} onClick={handleNext}>Next</Button>
         )}
       </CardActions>
     </Card>

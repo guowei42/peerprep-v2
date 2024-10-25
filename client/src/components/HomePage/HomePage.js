@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import QueueCard from "./QueueCard";
 
 // top-left, top-right, bottom-right, bottom-left
-const FlexGrid = styled(Grid2)(({ flexAmount }) => ({
+const FlexGrid = styled(Grid2)(({ flex_amount }) => ({
   display: "flex",
-  flex: `${flexAmount} 1 0`
+  flex: `${flex_amount} 1 0`
 }));
 
 function HomePage() {
@@ -27,18 +27,18 @@ function HomePage() {
         }}
       >
         <Grid2 container direction={"column"} size={7}>
-          <FlexGrid flexAmount={0.4}>
+          <FlexGrid flex_amount={0.4}>
             <div>profile</div>
           </FlexGrid>
-          <FlexGrid flexAmount={1}>
+          <FlexGrid flex_amount={1}>
             <div>past matches</div>
           </FlexGrid>
         </Grid2>
         <Grid2 container size={5} direction={"column"}>
-          <FlexGrid flexAmount={1}>
+          <FlexGrid flex_amount={1}>
             <div>ongoing session</div>
           </FlexGrid>
-          <FlexGrid flexAmount={1}>
+          <FlexGrid flex_amount={1}>
             <QueueCard />
           </FlexGrid>
         </Grid2>

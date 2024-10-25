@@ -38,6 +38,32 @@ services:
       - "27018:27018"
     volumes:
       - mongo:/data/db
+  
+  matching-redis:
+    image: redis
+    networks:
+      - matching
+    expose:
+      - 6379
+
+  matching:
+    build:
+      context: ./matching-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_MATCHING}
+    ports:
+      - ${PORT_MATCHING}:${PORT_MATCHING}
+    depends_on:
+      - matching-redis
+    networks:
+      - matching
+    environment:
+      - REDIS_URL=redis://matching-redis:6379
+
+networks:
+  matching:
+    driver: bridge
 
 volumes:
   mongo:
