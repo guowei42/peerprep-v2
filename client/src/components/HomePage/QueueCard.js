@@ -211,12 +211,12 @@ function QueueCard() {
                 Queued with: {queueState.partnerId}
               </Typography>
             )}
-            {queueLoading ? (
-              <BlurredButton>Start</BlurredButton>
-            ) : (
-              <Button onClick={handleStartQueue}>Start</Button>
+            {queueLoading && (<div><BlurredButton>Start</BlurredButton><Button onClick={handleEnd}>Quit</Button></div>)} 
+            {!queueLoading && queueState.status === "timeout" && (
+              <Button onClick={handleStartQueue}>Retry</Button>
             )}
-            <Button onClick={handleEnd}>Quit</Button>
+            {!queueLoading && queueState.status !== "timeout" && (<div><Button onClick={handleStartQueue}>Start</Button><Button onClick={handleEnd}>Quit</Button></div>)} 
+            
           </Box>
         )}
         {error && <Typography color="error">{error}</Typography>}
