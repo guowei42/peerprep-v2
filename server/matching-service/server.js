@@ -1,6 +1,7 @@
 const { Server } = require("socket.io");
 const redis = require("redis");
 const http = require("http");
+const { clear } = require("console");
 
 const port = process.env.PORT || 3003;
 const redis_url = process.env.REDIS_URL;
@@ -36,7 +37,7 @@ io.on("connection", (socket) => {
 
         await redisClient.rPush(`${topic}`, JSON.stringify({ userId, difficulty }));
 
-        const timeoutId = setTimeout(async () => {
+        socket.timeoutId = setTimeout(async () => {
             removeUser(userId, topic, difficulty)
             socket.emit("matchUpdate", { status: "timeout", message: "No match found within 30 seconds." });
             await redisClient.lRem(`${topic}`, 1, JSON.stringify({ userId, difficulty }));
@@ -44,11 +45,12 @@ io.on("connection", (socket) => {
 
         const match = await findMatch(userId, topic, difficulty);
         if (match) {
-            clearTimeout(timeoutId); 
+            clearTimeout(socket.timeoutId); 
             const room_id = uuidv4();
             socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId, roomId: room_id }); 
             const matchedSocket = findSocketByUserId(match.userId);
             if (matchedSocket) {
+                clearTimeout(matchedSocket.timeoutId);
                 matchedSocket.emit("matchUpdate", { status: "match_found", userId: match.userId, partnerId: userId, roomId:room_id });
             }
             await removeUser(userId, topic, difficulty);   
