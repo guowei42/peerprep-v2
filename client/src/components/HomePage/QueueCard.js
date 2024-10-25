@@ -231,7 +231,7 @@ function QueueCard() {
           Back
         </Button>
         {activeStep < steps.length - 1 && (
-          <Button disabled={topic === ""} onClick={handleNext}>Next</Button>
+          <Button  onClick={handleNext}>Next</Button>
         )}
       </CardActions>
     </Card>
