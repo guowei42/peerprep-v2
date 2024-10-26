@@ -18,7 +18,7 @@ import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SVC_ENDPOINTS } from "../../consts/api";
-import { socket } from "../../socket";
+import { matchingSocket } from "../../socket";
 import Cookies from "universal-cookie";
 import CircularWithValueLabel from "./CircularWithValueLabel";
 import { DIFFICULTY } from "../../consts/difficulty";
@@ -97,10 +97,10 @@ function QueueCard() {
   };
 
   const handleStartQueue = () => {
-    if (!socket.connected) {
-      socket.connect();
-      socket.emit("connection");
-      console.log("User connected to socket");
+    if (!matchingSocket.connected) {
+      matchingSocket.connect();
+      matchingSocket.emit("connection");
+      console.log("User connected to matchingSocket");
     }
     setProgress(100);
     setQueueLoading(true);
@@ -111,13 +111,13 @@ function QueueCard() {
     setTimer(timerId)
     const cookies = new Cookies();
     const userId = cookies.get("userId");
-    socket.emit("requestMatch", {
+    matchingSocket.emit("requestMatch", {
       userId: userId,
       topic: topic.category,
       difficulty: difficulty,
     });
 
-    socket.on("matchUpdate", (msg) => {
+    matchingSocket.on("matchUpdate", (msg) => {
       clearInterval(timerId);
       setQueueLoading(false);
       console.log("Message from match: ", msg);
@@ -126,7 +126,7 @@ function QueueCard() {
   };
 
   const handleEnd = () => {
-    socket.disconnect();
+    matchingSocket.disconnect();
     setQueueLoading(false);
     setQueueState({});
     setProgress(100);
@@ -135,8 +135,8 @@ function QueueCard() {
 
   useEffect(() => {
     return () => {
-      socket.off("matchUpdate");
-      socket.off("disconnect");
+      matchingSocket.off("matchUpdate");
+      matchingSocket.off("disconnect");
     };
   }, []);
 
@@ -231,7 +231,7 @@ function QueueCard() {
           Back
         </Button>
         {activeStep < steps.length - 1 && (
-          <Button  onClick={handleNext}>Next</Button>
+          <Button onClick={handleNext}>Next</Button>
         )}
       </CardActions>
     </Card>
