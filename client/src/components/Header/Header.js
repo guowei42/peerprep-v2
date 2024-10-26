@@ -1,9 +1,12 @@
-import { Box, Button, CircularProgress, Stack } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Box, Button, ButtonGroup, CircularProgress, Stack } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 function Header() {
+  // TEMP
+  let navigate = useNavigate();
+
   const { isAuthenticated, checkIsAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 
@@ -19,6 +22,20 @@ function Header() {
     <Stack direction={"row"} justifyContent={"space-between"} padding={"0 10px 0 10px"}>
       <h1>PeerPrep</h1>
       <Box display={"flex"} alignItems={"center"}>
+      {
+        // TEMP
+      }
+      <ButtonGroup>
+        <Button onClick={() => navigate("/questionpage")}>
+          To Question Page
+        </Button>
+        <Button onClick={() => navigate("/collaborationpage")}>
+          To Collaboration
+        </Button>
+      </ButtonGroup>
+      {
+        // ^^^^^^^^^^^^^^^^
+      }
         {loading ? (
           <CircularProgress />
         ) : isAuthenticated ? (

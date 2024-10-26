@@ -1,21 +1,15 @@
-import { Button, Grid2, styled } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Grid2, styled } from "@mui/material";
 import QueueCard from "./QueueCard";
 
 // top-left, top-right, bottom-right, bottom-left
 const FlexGrid = styled(Grid2)(({ flex_amount }) => ({
   display: "flex",
-  flex: `${flex_amount} 1 0`
+  flex: `${flex_amount} 1 0`,
 }));
 
 function HomePage() {
-  let navigate = useNavigate();
-
   return (
     <>
-      <Button onClick={() => navigate("/questionpage")}>
-        To Question Page
-      </Button>
       <Grid2
         container
         spacing={2}
