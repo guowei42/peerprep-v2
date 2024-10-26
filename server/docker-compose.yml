@@ -25,6 +25,15 @@ services:
       - ENV
       - DB_CLOUD_URI=${DB_URI_QUESTION}
 
+  collaboration:
+    build:
+      context: ./collaboration-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_COLLABORATION}
+    ports:
+      - ${PORT_COLLABORATION}:${PORT_COLLABORATION}
+
   matching-redis:
     image: redis
     networks:

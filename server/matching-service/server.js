@@ -2,6 +2,7 @@ const { Server } = require("socket.io");
 const redis = require("redis");
 const http = require("http");
 const { clear } = require("console");
+const { randomUUID } = require("crypto");
 
 const port = process.env.PORT || 3003;
 const redis_url = process.env.REDIS_URL;
@@ -46,7 +47,7 @@ io.on("connection", (socket) => {
         const match = await findMatch(userId, topic, difficulty);
         if (match) {
             clearTimeout(socket.timeoutId); 
-            const room_id = uuidv4();
+            const room_id = randomUUID();
             socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId, roomId: room_id }); 
             const matchedSocket = findSocketByUserId(match.userId);
             if (matchedSocket) {

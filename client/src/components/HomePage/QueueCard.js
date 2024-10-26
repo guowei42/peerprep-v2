@@ -22,13 +22,14 @@ import { matchingSocket } from "../../socket";
 import Cookies from "universal-cookie";
 import CircularWithValueLabel from "./CircularWithValueLabel";
 import { DIFFICULTY } from "../../consts/difficulty";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
 const BlurredButton = styled(Button)(({ theme }) => ({
-  pointerEvents: 'none',  
-  color: theme.palette.grey[800], 
-  opacity: 0.5
+  pointerEvents: "none",
+  color: theme.palette.grey[800],
+  opacity: 0.5,
 }));
 
 const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -44,6 +45,7 @@ const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 }));
 
 function QueueCard() {
+  const navigate = useNavigate();
 
   const [activeStep, setActiveStep] = useState(0);
   const [difficulty, setDifficulty] = useState(DIFFICULTY.easy);
@@ -63,7 +65,7 @@ function QueueCard() {
   const handleTopicChange = (_, nextView) => {
     setTopic(nextView);
     if (nextView) {
-      setError(""); 
+      setError("");
     }
   };
 
@@ -87,8 +89,10 @@ function QueueCard() {
         `${SVC_ENDPOINTS.question}/questions/categories/unique`
       );
       if (response.status === 200) {
-        console.log(response.data.map((x) => x.category))
-        setQuestionCategories(Array.from(response.data.map((x) => x.category)).sort());
+        console.log(response.data.map((x) => x.category));
+        setQuestionCategories(
+          Array.from(response.data.map((x) => x.category)).sort()
+        );
       }
     } catch (error) {
       console.log(error);
@@ -104,11 +108,14 @@ function QueueCard() {
     }
     setProgress(100);
     setQueueLoading(true);
-    
+
     clearInterval(timer);
-    const timerId = setInterval(() => {setProgress((prevProgress) => (prevProgress <= 0 ? 0 : prevProgress - 10/3));
+    const timerId = setInterval(() => {
+      setProgress((prevProgress) =>
+        prevProgress <= 0 ? 0 : prevProgress - 10 / 3
+      );
     }, 1000);
-    setTimer(timerId)
+    setTimer(timerId);
     const cookies = new Cookies();
     const userId = cookies.get("userId");
     matchingSocket.emit("requestMatch", {
@@ -134,11 +141,22 @@ function QueueCard() {
   };
 
   useEffect(() => {
+    if (queueState.status === "match_found") {
+      console.log("here");
+      const temp_partnerId = queueState.partnerId;
+      const temp_roomId = queueState.roomId;
+      handleEnd();
+      navigate("/collaborationpage", {
+        state: { partnerId: temp_partnerId, roomId: temp_roomId },
+      });
+    }
     return () => {
       matchingSocket.off("matchUpdate");
-      matchingSocket.off("disconnect");
+
+      //probably don't need
+      //matchingSocket.off("disconnect");
     };
-  }, []);
+  }, [queueState]);
 
   useEffect(() => {
     if (activeStep === 1 && questionCategories.length === 0) {
@@ -171,7 +189,10 @@ function QueueCard() {
             <ToggleButton value={DIFFICULTY.easy} aria-label={DIFFICULTY.easy}>
               Easy
             </ToggleButton>
-            <ToggleButton value={DIFFICULTY.medium} aria-label={DIFFICULTY.medium}>
+            <ToggleButton
+              value={DIFFICULTY.medium}
+              aria-label={DIFFICULTY.medium}
+            >
               Medium
             </ToggleButton>
             <ToggleButton value={DIFFICULTY.hard} aria-label={DIFFICULTY.hard}>
@@ -202,21 +223,30 @@ function QueueCard() {
         )}
         {activeStep === 2 && (
           <Box>
-            {queueLoading && <div><Typography variant="h3">Finding You A Match! :D</Typography><CircularWithValueLabel value={progress}/></div>}
+            {queueLoading && (
+              <div>
+                <Typography variant="h3">Finding You A Match! :D</Typography>
+                <CircularWithValueLabel value={progress} />
+              </div>
+            )}
             {!queueLoading && queueState.status === "timeout" && (
               <Typography variant="h3">No Match Found! D:</Typography>
             )}
-            {!queueLoading && queueState.status === "match_found" && (
-              <Typography variant="h4">
-                Queued with: {queueState.partnerId}
-              </Typography>
+            {queueLoading && (
+              <div>
+                <BlurredButton>Start</BlurredButton>
+                <Button onClick={handleEnd}>Quit</Button>
+              </div>
             )}
-            {queueLoading && (<div><BlurredButton>Start</BlurredButton><Button onClick={handleEnd}>Quit</Button></div>)} 
             {!queueLoading && queueState.status === "timeout" && (
               <Button onClick={handleStartQueue}>Retry</Button>
             )}
-            {!queueLoading && queueState.status !== "timeout" && (<div><Button onClick={handleStartQueue}>Start</Button><Button onClick={handleEnd}>Quit</Button></div>)} 
-            
+            {!queueLoading && queueState.status !== "timeout" && (
+              <div>
+                <Button onClick={handleStartQueue}>Start</Button>
+                <Button onClick={handleEnd}>Quit</Button>
+              </div>
+            )}
           </Box>
         )}
         {error && <Typography color="error">{error}</Typography>}
