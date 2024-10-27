@@ -20,7 +20,12 @@ function Header() {
 
   return (
     <Stack direction={"row"} justifyContent={"space-between"} padding={"0 10px 0 10px"}>
-      <h1><a href="/" style={{ textDecoration: 'none', color: 'inherit' }}>PeerPrep</a></h1>
+      <h1 
+        onClick={() => navigate("/")} 
+        style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
+      >
+        PeerPrep
+      </h1>
       <Box display={"flex"} alignItems={"center"}>
       {
         // TEMP

@@ -17,10 +17,12 @@ function CollaborationPage() {
       roomId: cookies.get("roomId"),
       code: val,
     });
+    cookies.set('code', val, { path: '/' });
   };
 
   const handleEnd = () => {
     collaborationSocket.disconnect();
+    cookies.remove("roomId");
     setValue("");
     setIsLoading(true);
   };
@@ -36,12 +38,14 @@ function CollaborationPage() {
       
       const userId = cookies.get("userId");
 
-      cookies.set("roomId", state.roomId);
+      
 
-      if (!state || !state.partnerId) {
+      if (!state || !state.partnerId || !state.roomId) {
         console.error("Error: Either state or partnerId is null. Cannot emit match_found event.");
         return;
       }
+
+      cookies.set("roomId", state.roomId, { path: '/' });
 
       collaborationSocket.emit("match_found", {
         userId: userId,
@@ -63,6 +67,11 @@ function CollaborationPage() {
         console.log(msg)
         setValue(msg);
       });
+      const initialCode = cookies.get("code"); // Retrieve initial code from cookies if needed
+      if (initialCode) {
+      setValue(initialCode);
+    }
+      
     }
    
 

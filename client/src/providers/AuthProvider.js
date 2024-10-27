@@ -48,6 +48,9 @@ function AuthProvider({ children }) {
   const handleLogout = useCallback(() => {
     const cookies = new Cookies();
     cookies.remove("accessToken", { path: "/" });
+    cookies.remove("roomId", { path: "/" });
+    cookies.remove("code", { path: "/" });
+    cookies.remove("userId", { path: "/" });
     setIsAuthenticated(false);
     setAccessToken("");
   }, []);
