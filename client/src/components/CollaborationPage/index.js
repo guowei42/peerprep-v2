@@ -23,6 +23,8 @@ function CollaborationPage() {
   const handleEnd = () => {
     collaborationSocket.disconnect();
     cookies.remove("roomId");
+    cookies.remove("partnerId");
+    cookies.remove("code");
     setValue("");
     setIsLoading(true);
   };
@@ -67,6 +69,7 @@ function CollaborationPage() {
       if (initialCode) {
       setValue(initialCode);
     }
+    
 
    
 
