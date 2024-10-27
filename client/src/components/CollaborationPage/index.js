@@ -29,6 +29,9 @@ function CollaborationPage() {
 
   useEffect(() => {
     console.log(state)
+    if (cookies.get("roomId") === undefined && state === null) {
+      return
+    }
     if (!collaborationSocket.connected) {
       console.log(collaborationSocket);
       collaborationSocket.connect();
@@ -63,14 +66,15 @@ function CollaborationPage() {
       });
     } else {
       setIsLoading(false);
+      const initialCode = cookies.get("code");
+      if (initialCode) {
+      setValue(initialCode);
+    }
       collaborationSocket.on("code_update", (msg) => {
         console.log(msg)
         setValue(msg);
       });
-      const initialCode = cookies.get("code"); // Retrieve initial code from cookies if needed
-      if (initialCode) {
-      setValue(initialCode);
-    }
+     
       
     }
    
