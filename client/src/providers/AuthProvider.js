@@ -51,6 +51,7 @@ function AuthProvider({ children }) {
     cookies.remove("roomId", { path: "/" });
     cookies.remove("code", { path: "/" });
     cookies.remove("userId", { path: "/" });
+    cookies.remove("partnerId", { path: "/" });
     setIsAuthenticated(false);
     setAccessToken("");
   }, []);

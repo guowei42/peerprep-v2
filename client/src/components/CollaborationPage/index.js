@@ -41,42 +41,33 @@ function CollaborationPage() {
       
       const userId = cookies.get("userId");
 
-      
-
-      if (!state || !state.partnerId || !state.roomId) {
-        console.error("Error: Either state or partnerId is null. Cannot emit match_found event.");
-        return;
+      if (cookies.get("roomId") === undefined) {
+        cookies.set("roomId", state.roomId, { path: '/' });
       }
 
-      cookies.set("roomId", state.roomId, { path: '/' });
+      if (cookies.get("partnerId") === undefined) {
+        cookies.set("partnerId", state.partnerId, { path: '/' });
+      }
 
       collaborationSocket.emit("match_found", {
         userId: userId,
-        partnerId: state.partnerId,
-        roomId: state.roomId,
+        partnerId: cookies.get("partnerId"),
+        roomId: cookies.get("roomId"),
       });
 
      
-
+    }
       setIsLoading(false);
 
       collaborationSocket.on("code_update", (msg) => {
         console.log(msg)
         setValue(msg);
       });
-    } else {
-      setIsLoading(false);
       const initialCode = cookies.get("code");
       if (initialCode) {
       setValue(initialCode);
     }
-      collaborationSocket.on("code_update", (msg) => {
-        console.log(msg)
-        setValue(msg);
-      });
-     
-      
-    }
+
    
 
     return () => {
