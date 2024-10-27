@@ -23,6 +23,7 @@ import Cookies from "universal-cookie";
 import CircularWithValueLabel from "./CircularWithValueLabel";
 import { DIFFICULTY } from "../../consts/difficulty";
 import { Navigate, useNavigate } from "react-router-dom";
+import { collaborationSocket } from "../../socket";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
@@ -145,9 +146,11 @@ function QueueCard() {
       console.log("here");
       const temp_partnerId = queueState.partnerId;
       const temp_roomId = queueState.roomId;
+      const temp_complexity = queueState.difficulty;
       handleEnd();
+      console.log(queueState);
       navigate("/collaborationpage", {
-        state: { partnerId: temp_partnerId, roomId: temp_roomId },
+        state: { partnerId: temp_partnerId, roomId: temp_roomId, topic: topic, complexity: temp_complexity},
       });
     }
     return () => {
@@ -181,6 +184,14 @@ function QueueCard() {
       <Divider />
       <CardContent sx={{ flex: "1 1 auto" }}>
         {activeStep === 0 && (
+           <Box
+           sx={{
+             display: "flex",
+             justifyContent: "center", // Centers horizontally
+             alignItems: "center", // Centers vertically
+             height: "100%", // Ensures full height for vertical centering
+           }}
+         >
           <ToggleButtonGroup
             value={difficulty}
             onChange={handleDifficultyChange}
@@ -199,6 +210,7 @@ function QueueCard() {
               Hard
             </ToggleButton>
           </ToggleButtonGroup>
+          </Box>
         )}
         {activeStep === 1 && (
           <Box>
@@ -222,29 +234,46 @@ function QueueCard() {
           </Box>
         )}
         {activeStep === 2 && (
-          <Box>
+          <Box
+          sx={{
+            display: "flex",
+            flexDirection: 'column', 
+            justifyContent: "center", 
+            alignItems: "center", 
+            height: "100%", 
+          }}
+        >
             {queueLoading && (
-              <div>
-                <Typography variant="h3">Finding You A Match! :D</Typography>
+              <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column', 
+                justifyContent: 'center',
+                alignItems: 'center', 
+                height: '100%', 
+              }}
+            >
+                <Typography variant="h4">Finding You A Match! :D</Typography>
                 <CircularWithValueLabel value={progress} />
-              </div>
+                <Button color="error" variant="contained" onClick={handleEnd}>Cancel</Button>
+              </Box>
             )}
             {!queueLoading && queueState.status === "timeout" && (
-              <Typography variant="h3">No Match Found! D:</Typography>
+              
+              <Typography variant="h4">No Match Found! D:</Typography>
+        
             )}
-            {queueLoading && (
+            {queueLoading || collaborationSocket.connected && (
               <div>
-                <BlurredButton>Start</BlurredButton>
-                <Button onClick={handleEnd}>Quit</Button>
+                <BlurredButton variant="contained" >Start</BlurredButton>
               </div>
             )}
-            {!queueLoading && queueState.status === "timeout" && (
-              <Button onClick={handleStartQueue}>Retry</Button>
+            {!queueLoading && queueState.status === "timeout"  && !collaborationSocket.connected && (
+              <Button variant="contained" onClick={handleStartQueue}>Retry</Button>
             )}
-            {!queueLoading && queueState.status !== "timeout" && (
+            {!queueLoading && queueState.status !== "timeout" && !collaborationSocket.connected && (
               <div>
-                <Button onClick={handleStartQueue}>Start</Button>
-                <Button onClick={handleEnd}>Quit</Button>
+                <Button variant="contained" onClick={handleStartQueue}>Start</Button>
               </div>
             )}
           </Box>

@@ -32,10 +32,7 @@ function Header() {
       }
       <ButtonGroup>
         <Button onClick={() => navigate("/questionpage")}>
-          To Question Page
-        </Button>
-        <Button onClick={() => navigate("/collaborationpage")}>
-          To Collaboration
+          Questions
         </Button>
       </ButtonGroup>
       {

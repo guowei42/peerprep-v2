@@ -52,6 +52,7 @@ function AuthProvider({ children }) {
     cookies.remove("code", { path: "/" });
     cookies.remove("userId", { path: "/" });
     cookies.remove("partnerId", { path: "/" });
+    cookies.remove("question", { path: "/" });
     setIsAuthenticated(false);
     setAccessToken("");
   }, []);

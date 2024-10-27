@@ -1,5 +1,6 @@
 import { Grid2, styled } from "@mui/material";
 import QueueCard from "./QueueCard";
+import OngoingCard from "./OngoingCard";
 
 // top-left, top-right, bottom-right, bottom-left
 const FlexGrid = styled(Grid2)(({ flex_amount }) => ({
@@ -30,7 +31,7 @@ function HomePage() {
         </Grid2>
         <Grid2 container size={5} direction={"column"}>
           <FlexGrid flex_amount={1}>
-            <div>ongoing session</div>
+            <OngoingCard/>
           </FlexGrid>
           <FlexGrid flex_amount={1}>
             <QueueCard />

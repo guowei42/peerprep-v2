@@ -48,11 +48,15 @@ io.on("connection", (socket) => {
         if (match) {
             clearTimeout(socket.timeoutId); 
             const room_id = randomUUID();
-            socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId, roomId: room_id }); 
+            var temp_difficulty = difficulty;
+            if (temp_difficulty === null) {
+                temp_difficulty = "Easy";
+            }
+            socket.emit("matchUpdate", { status: "match_found", userId: userId, partnerId: match.userId, roomId: room_id, difficulty: temp_difficulty}); 
             const matchedSocket = findSocketByUserId(match.userId);
             if (matchedSocket) {
                 clearTimeout(matchedSocket.timeoutId);
-                matchedSocket.emit("matchUpdate", { status: "match_found", userId: match.userId, partnerId: userId, roomId:room_id });
+                matchedSocket.emit("matchUpdate", { status: "match_found", userId: match.userId, partnerId: userId, roomId:room_id, difficulty: temp_difficulty });
             }
             await removeUser(userId, topic, difficulty);   
         }
