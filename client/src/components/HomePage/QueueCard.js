@@ -264,9 +264,18 @@ function QueueCard() {
         
             )}
             {queueLoading || collaborationSocket.connected && (
-              <div>
+              <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column', 
+                justifyContent: 'center',
+                alignItems: 'center', 
+                height: '100%', 
+              }}
+            >
                 <BlurredButton variant="contained" >Start</BlurredButton>
-              </div>
+                <p>Please end all ongoing session before matching again!</p>
+              </Box>
             )}
             {!queueLoading && queueState.status === "timeout"  && !collaborationSocket.connected && (
               <Button variant="contained" onClick={handleStartQueue}>Retry</Button>

@@ -5,10 +5,9 @@ function OngoingCard() {
     return (
         <div>
             <p>Ongoing session</p>
-            <Button onClick={() => navigate("/collaborationpage")}>
+            <Button variant = "contained" onClick={() => navigate("/collaborationpage")}>
           Ongoing session
         </Button>
-        <p>Please end all ongoing session before matching again!</p>
         </div>
     )
 
