@@ -8,13 +8,13 @@ import { Button } from "@mui/material";
 
 function CollaborationPage() {
   const { state } = useLocation();
-
+  const cookies = new Cookies();
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue] = useState("");
   const onChange = (val, viewUpdate) => {
     setValue(val);
     collaborationSocket.emit("code_change", {
-      roomId: state.roomId,
+      roomId: cookies.get("roomId"),
       code: val,
     });
   };
@@ -28,12 +28,20 @@ function CollaborationPage() {
   useEffect(() => {
     console.log(state)
     if (!collaborationSocket.connected) {
+      console.log(collaborationSocket);
       collaborationSocket.connect();
       collaborationSocket.emit("connection");
       console.log("User connected to collaboration socket");
 
-      const cookies = new Cookies();
+      
       const userId = cookies.get("userId");
+
+      cookies.set("roomId", state.roomId);
+
+      if (!state || !state.partnerId) {
+        console.error("Error: Either state or partnerId is null. Cannot emit match_found event.");
+        return;
+      }
 
       collaborationSocket.emit("match_found", {
         userId: userId,
@@ -41,13 +49,22 @@ function CollaborationPage() {
         roomId: state.roomId,
       });
 
+     
+
       setIsLoading(false);
 
       collaborationSocket.on("code_update", (msg) => {
         console.log(msg)
         setValue(msg);
       });
+    } else {
+      setIsLoading(false);
+      collaborationSocket.on("code_update", (msg) => {
+        console.log(msg)
+        setValue(msg);
+      });
     }
+   
 
     return () => {
       collaborationSocket.off("code_change");
