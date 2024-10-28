@@ -1,10 +1,11 @@
 import { javascript } from "@codemirror/lang-javascript";
 import CodeMirror from "@uiw/react-codemirror";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { collaborationSocket } from "../../socket";
 import Cookies from "universal-cookie";
-import { Button } from "@mui/material";
+import { Button, TextField, Paper, Typography, CircularProgress} from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 import axios from "axios";
 import { SVC_ENDPOINTS } from "../../consts/api";
 
@@ -14,6 +15,9 @@ function CollaborationPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue] = useState("");
   const [question, setQuestion] = useState(null);
+  const [aiText, setAiText] = useState(null);
+  const [aiResponse, setAiReponse] = useState(null);
+  const [isAiLoading, setisAiLoading] = useState(false);
   const onChange = (val, viewUpdate) => {
     setValue(val);
     collaborationSocket.emit("code_change", {
@@ -31,6 +35,21 @@ function CollaborationPage() {
     cookies.remove("question");
     setValue("");
     setIsLoading(true);
+  };
+
+  const handleAi= async () => {
+    const payload = {
+      "prompt" : aiText,
+      "topic" : question.title,
+      "description": question.description,
+      "code": cookies.get('code')
+
+    }
+    setAiReponse(null);
+    setisAiLoading(true);
+    const response = await axios.post(`${SVC_ENDPOINTS.ai}/ai/prompt`, payload);
+    setisAiLoading(false);
+    setAiReponse(response.data); 
   };
 
   useEffect(() => {
@@ -95,7 +114,8 @@ function CollaborationPage() {
   }, []);
 
   return (
-    <>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '16px' }}>
+    <div style = {{flex: '1'}}>
       {!isLoading && (
         <>
         <div className="question-display">
@@ -111,7 +131,37 @@ function CollaborationPage() {
         </>
       )}
       <Button color="error" variant="contained" onClick={handleEnd}>END SESSION</Button>
-    </>
+      </div>
+      <div style = {{flex: '1'}}>
+        <h2>Type below to ask help from AI!</h2>
+        {aiResponse !== null && (
+          <div>
+            <Paper style={{ padding: '10px', marginTop: '20px', backgroundColor: '#f5f5f5' }}>
+                    <Typography variant="h6">Gemini Response:</Typography>
+                    <Typography style={{ whiteSpace: 'pre-line' }}>{aiResponse}</Typography>
+            </Paper>
+          </div>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '20px' }}>
+            <TextField 
+                fullWidth 
+                label="Ask Gemini" 
+                id="fullWidth"
+                style={{ flex: '1'}} 
+                onChange={(e) => setAiText(e.target.value)}
+            />
+            {isAiLoading ? (
+              <CircularProgress />
+              ) : (
+                <Button 
+                variant="contained" 
+                endIcon={<SendIcon />}
+                onClick={handleAi}
+            > Send </Button>
+            )}
+        </div>
+      </div>
+    </div>
   );
 }
 
