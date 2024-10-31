@@ -8,6 +8,7 @@ import { Button, TextField, Paper, Typography, CircularProgress} from "@mui/mate
 import SendIcon from '@mui/icons-material/Send';
 import axios from "axios";
 import { SVC_ENDPOINTS } from "../../consts/api";
+import { useNavigate } from "react-router-dom";
 
 function CollaborationPage() {
   const { state } = useLocation();
@@ -18,6 +19,7 @@ function CollaborationPage() {
   const [aiText, setAiText] = useState(null);
   const [aiResponse, setAiReponse] = useState(null);
   const [isAiLoading, setisAiLoading] = useState(false);
+  const navigate = useNavigate();
   const onChange = (val, viewUpdate) => {
     setValue(val);
     collaborationSocket.emit("code_change", {
@@ -28,6 +30,7 @@ function CollaborationPage() {
   };
 
   const handleEnd = () => {
+    collaborationSocket.off();
     collaborationSocket.disconnect();
     cookies.remove("roomId");
     cookies.remove("partnerId");
@@ -35,6 +38,7 @@ function CollaborationPage() {
     cookies.remove("question");
     setValue("");
     setIsLoading(true);
+    navigate("/");
   };
 
   const handleAi= async () => {
@@ -62,7 +66,6 @@ function CollaborationPage() {
       collaborationSocket.connect();
       collaborationSocket.emit("connection");
       console.log("User connected to collaboration socket");
-
       
       const userId = cookies.get("userId");
 
