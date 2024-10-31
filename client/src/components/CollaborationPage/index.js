@@ -38,7 +38,7 @@ function CollaborationPage() {
     cookies.remove("question");
     setValue("");
     setIsLoading(true);
-    navigate("/");
+    navigate("/", { replace: true, state: null });
   };
 
   const handleAi= async () => {
