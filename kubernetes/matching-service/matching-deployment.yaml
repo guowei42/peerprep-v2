@@ -1,18 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: catalog-service
-  namespace: cs3219
+  name: matching-service
+  labels:
+    app: matching-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: catalog-service
+      app: matching-service
   template:
     metadata:
       labels:
-        app: catalog-service
+        app: matching-service
     spec:
       containers:
-        - name: catalog-service
-          image: guowei42/catalog-service:1.0.0
+        - name: matching-service
+          image: asia-southeast1-docker.pkg.dev/peerprep-440702/peerprep/matching:latest
+          ports:
+            - name: matching-service
+              containerPort: 3003
+      restartPolicy: Always
+
+      

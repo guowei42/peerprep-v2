@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: question-service
+  labels:
+    app: question-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: question-service
+  template:
+    metadata:
+      labels:
+        app: question-service
+    spec:
+      containers:
+        - name: question-service
+          image: asia-southeast1-docker.pkg.dev/peerprep-440702/peerprep/questions:latest
+          ports:
+            - name: question-service
+              containerPort: 3002
+      restartPolicy: Always
+
+      
