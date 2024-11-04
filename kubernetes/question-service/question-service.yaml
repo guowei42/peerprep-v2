@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: question-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "question-service-backendconfig"}'
   labels:
     app: question-service
 spec:
@@ -9,6 +11,6 @@ spec:
     app: question-service
   type: ClusterIP
   ports:
-    - name: qn-service
+    - name: question-service
       port: 3002
       targetPort: 3002
