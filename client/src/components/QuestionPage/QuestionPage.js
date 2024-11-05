@@ -5,7 +5,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./QuestionPage.css";
 import AddQuestionForm from "../AddQuestion/AddQuestionForm";
 import UpdateQuestionForm from "../UpdateQuestion/UpdateQuestionForm";

@@ -1,5 +1,4 @@
 // LandingPage.js
-import React from "react";
 import { Button, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";

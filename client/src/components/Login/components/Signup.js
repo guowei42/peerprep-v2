@@ -1,7 +1,7 @@
 import { Box, Button } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { SVC_ENDPOINTS } from "../../../consts/api";
 import { CustomInput, LoginBox } from "../LoginWrapper";

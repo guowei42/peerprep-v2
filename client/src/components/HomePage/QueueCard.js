@@ -189,7 +189,7 @@ function QueueCard() {
               >
                 {questionCategories.map((category) => {
                   return (
-                    <ToggleButton value={category}>
+                    <ToggleButton value={category} key={category}>
                       {category.category}
                     </ToggleButton>
                   );

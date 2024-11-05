@@ -1,7 +1,7 @@
 import { Box, Button, Link, Stack, Typography } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { SVC_ENDPOINTS } from "../../../consts/api";
@@ -93,7 +93,7 @@ function Login() {
           </Button>
         </RouterLink>
         <Stack alignItems={"center"} marginTop={"10px"}>
-          <Typography variant="body2">Don't have an account?</Typography>
+          <Typography variant="body2">Don&apos;t have an account?</Typography>
           <Typography variant="body2">
             Sign up{" "}
             <Link component={RouterLink} to="/signup">

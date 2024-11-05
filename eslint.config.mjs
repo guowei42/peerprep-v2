@@ -30,6 +30,17 @@ export default [
     },
     rules: {
       // rule overrides
+      "no-unused-vars": [
+        "error",
+        {
+          vars: "all",
+          args: "none",
+          caughtErrors: "all",
+          ignoreRestSiblings: false,
+          reportUsedIgnorePattern: false,
+        },
+      ],
+      "react/prop-types": "off",
     },
   },
 ];
