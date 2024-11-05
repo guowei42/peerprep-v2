@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: question-service
+  name: qn-service
   labels:
-    app: question-service
+    app: qn-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: question-service
+      app: qn-service
   template:
     metadata:
       labels:
-        app: question-service
+        app: qn-service
     spec:
       containers:
-        - name: question-service
+        - name: qn-service
           image: asia-southeast1-docker.pkg.dev/peerprep-440702/peerprep/questions:latest
           ports:
-            - name: question-service
+            - name: qn-service
               containerPort: 3002
       restartPolicy: Always
 

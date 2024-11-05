@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: matching-service
+  name: match-service
   labels:
-    app: matching-service
+    app: match-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: matching-service
+      app: match-service
   template:
     metadata:
       labels:
-        app: matching-service
+        app: match-service
     spec:
       containers:
-        - name: matching-service
+        - name: match-service
           image: asia-southeast1-docker.pkg.dev/peerprep-440702/peerprep/matching:latest
           ports:
-            - name: matching-service
+            - name: match-service
               containerPort: 3003
       restartPolicy: Always
 

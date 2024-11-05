@@ -14,7 +14,7 @@ env:
   GKE_ZONE: asia-southeast1
   DEPLOYMENT_NAME: question-service
   REPOSITORY_NAME: peerprep
-  IMAGE: question
+  IMAGE: questions
 
 jobs:
   setup-build-publish-deploy:
