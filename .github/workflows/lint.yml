@@ -19,7 +19,6 @@ jobs:
           node-version: 18
       - name: Install Client Dependencies
         run: |
-            npm ci
             cd client
             npm ci
             cd ..
