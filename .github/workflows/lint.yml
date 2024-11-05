@@ -17,13 +17,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - name: Install Dependencies
+      - name: Install Client Dependencies
         run: |
             npm ci
-            cd server
-            npm ci
-            cd ../client
+            cd client
             npm ci
             cd ..
-      - name: Run Lint Checks
+      - name: Install Server Dependencies
+        run: |
+            cd server
+            npm ci
+            cd ..
+      - name: Install Outer Folder Dependencies
+        run: |
+            npm ci
+      - name: Run Lint Checks (eslint)
         run: npx eslint .
