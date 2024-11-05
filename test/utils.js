@@ -6,7 +6,6 @@ module.exports.ROOT_URL = "http://localhost:3000";
 module.exports.getWebDriver = async () => {
   let browser = process.env.BROWSER;
   let driver = await new Builder().forBrowser(browser).build();
-  console.log(driver);
   return driver;
 };
 
