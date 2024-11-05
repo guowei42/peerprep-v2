@@ -58,10 +58,10 @@ jobs:
             cd server
             docker compose -f docker-compose.local.yml build
             docker compose -f docker-compose.local.yml up -d
-      - name: Setup & run client
+      - name: Setup & build client
         run: |
             cd client
             npm ci
-            npm run start
+            npm run build
       - name: Run Tests
         run: xvfb-run --server-args="-screen 0 1024x768x24" npm run test
