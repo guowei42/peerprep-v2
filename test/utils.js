@@ -1,8 +1,7 @@
 const { Builder } = require("selenium-webdriver");
 
-module.exports.TIMEOUT = 30 * 1000;
 
-module.exports.URL = "http://localhost:3000";
+module.exports.ROOT_URL = "http://localhost:3000";
 
 module.exports.getWebDriver = async () => {
   let browser = process.env.BROWSER;
