@@ -18,8 +18,10 @@ function Header() {
   return (
     <AppBar position="static" sx={{ backgroundColor: "#e0e0e0" }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "#1976d2", fontWeight: 'bold', textAlign: 'left' }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', textAlign: 'left' }}>
+        <Link to="/" style={{ textDecoration: "none", color: "#1976d2"}}>
           PeerPrep
+          </Link>
         </Typography>
         <Box>
           {loading ? (
