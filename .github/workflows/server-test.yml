@@ -87,7 +87,7 @@ jobs:
         uses: SpicyPizza/create-envfile@v2.0
         with:
           envkey_ENV: PROD
-          envkey_PORT_MATCHING: 3001
+          envkey_PORT_USER: 3001
           envkey_DB_URI_USER: mongodb://localhost:27017/user
           envkey_JWT_SECRET: secret
           directory: .
