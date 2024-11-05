@@ -14,6 +14,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./client
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,15 +28,11 @@ jobs:
         uses: SpicyPizza/create-envfile@v2.0
         with:
           envkey_REACT_APP_API_BASE_URL: http://localhost
-          directory: client
+          directory: .
           file_name: .env
           fail_on_empty: false
           sort_keys: false
       - name: Install Client Dependencies
-        run: |
-            cd client
-            npm ci
+        run: npm ci
       - name: Run Tests
-        run: |
-            cd client
-            npm run test
+        run: npm run test
