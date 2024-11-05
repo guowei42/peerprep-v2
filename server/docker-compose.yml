@@ -9,6 +9,7 @@ services:
       - "80:80"
 
   user:
+    container_name: user-service
     build:
       context: ./user-service
       dockerfile: Dockerfile
@@ -25,6 +26,7 @@ services:
       - JWT_SECRET
 
   questions:
+    container_name: question-service
     build:
       context: ./question-service
       dockerfile: Dockerfile
@@ -46,6 +48,7 @@ services:
       - 6379
 
   matching:
+    container_name: matching-service
     build:
       context: ./matching-service
       dockerfile: Dockerfile
