@@ -1,25 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: matching-service
+  name: gateway-ingress
   labels:
-    app: matching-service
+    app: gateway-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    # set static ip later
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: matching-service
-  template:
-    metadata:
-      labels:
-        app: matching-service
-    spec:
-      containers:
-        - name: matching-service
-          image: asia-southeast1-docker.pkg.dev/peerprep-440702/peerprep/matching:latest
-          ports:
-            - name: matching-service
-              containerPort: 3003
-      restartPolicy: Always
-
-      
+  rules:
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 80
