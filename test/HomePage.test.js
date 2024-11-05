@@ -6,16 +6,14 @@ const url = "http://localhost:3000"
 
 beforeAll(async () => {
     driver = await utils.getWebDriver();
-});
+}, 10000);
 
 beforeEach(async () => {
-    await driver.get(
-        url,
-      );
+    await driver.get(url);
 });
   
 afterAll(async () => {
-    await driver.quit();
+    if (driver) await driver.quit();
 });
 
 test('clicking "PeerPrep" text in toolbar navigates to homepage', async () => {
