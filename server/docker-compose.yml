@@ -1,5 +1,15 @@
 services:
+  nginx:
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    ports:
+      - "80:80"
+
   user:
+    container_name: user-service
     build:
       context: ./user-service
       dockerfile: Dockerfile
@@ -7,6 +17,8 @@ services:
         - PORT=${PORT_USER}
     ports:
       - ${PORT_USER}:${PORT_USER}
+    networks:
+      - backend
     environment:
       - ENV
       - DB_CLOUD_URI=${DB_URI_USER}
@@ -14,6 +26,7 @@ services:
       - JWT_SECRET
 
   questions:
+    container_name: question-service
     build:
       context: ./question-service
       dockerfile: Dockerfile
@@ -21,6 +34,8 @@ services:
         - PORT=${PORT_QUESTION}
     ports:
       - ${PORT_QUESTION}:${PORT_QUESTION}
+    networks:
+      - backend
     environment:
       - ENV
       - DB_CLOUD_URI=${DB_URI_QUESTION}
@@ -33,6 +48,7 @@ services:
       - 6379
 
   matching:
+    container_name: matching-service
     build:
       context: ./matching-service
       dockerfile: Dockerfile
@@ -44,9 +60,12 @@ services:
       - matching-redis
     networks:
       - matching
+      - backend
     environment:
       - REDIS_URL=redis://matching-redis:6379
 
 networks:
   matching:
+    driver: bridge
+  backend:
     driver: bridge
