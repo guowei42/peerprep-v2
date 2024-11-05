@@ -1,10 +1,8 @@
-import { Button, Grid2, styled } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Grid2 } from "@mui/material";
 import QueueCard from "./QueueCard";
 import BasicCard from "./BasicCard";
 
 function HomePage() {
-  let navigate = useNavigate();
 
   return (
     <>

@@ -8,7 +8,6 @@ import HomePage from "../components/HomePage/HomePage";
 import LoginWrapper from "../components/Login/LoginWrapper";
 import Login from "../components/Login/components/Login";
 import Signup from "../components/Login/components/Signup";
-import LandingPage from "../components/LandingPage/LandingPage";
 
 export const router = createBrowserRouter([
   {
