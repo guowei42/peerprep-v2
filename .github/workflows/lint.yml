@@ -18,6 +18,12 @@ jobs:
         with:
           node-version: 18
       - name: Install Dependencies
-        run: npm ci
+        run: |
+            npm ci
+            cd server
+            npm ci
+            cd ../client
+            npm ci
+            cd ..
       - name: Run Lint Checks
         run: npx eslint .
