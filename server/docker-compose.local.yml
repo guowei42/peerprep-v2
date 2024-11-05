@@ -1,5 +1,14 @@
 name: local-mongo-instance
 services:
+  nginx:
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    ports:
+      - 80:80
+
   user:
     build:
       context: ./user-service
@@ -8,6 +17,9 @@ services:
         - PORT=${PORT_USER}
     ports:
       - ${PORT_USER}:${PORT_USER}
+    networks:
+      - backend
+      - mongo-net
     environment:
       - ENV
       - DB_CLOUD_URI=${DB_URI_USER}
@@ -24,6 +36,9 @@ services:
         - PORT=${PORT_QUESTION}
     ports:
       - ${PORT_QUESTION}:${PORT_QUESTION}
+    networks:
+      - backend
+      - mongo-net
     environment:
       - ENV
       - DB_CLOUD_URI=${DB_URI_QUESTION}
@@ -36,8 +51,41 @@ services:
     command: mongod --port 27018
     ports:
       - "27018:27018"
+    networks:
+      - mongo-net
     volumes:
       - mongo:/data/db
+
+  matching-redis:
+    image: redis
+    networks:
+      - matching
+    expose:
+      - 6379
+
+  matching:
+    build:
+      context: ./matching-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_MATCHING}
+    ports:
+      - ${PORT_MATCHING}:${PORT_MATCHING}
+    depends_on:
+      - matching-redis
+    networks:
+      - matching
+      - backend
+    environment:
+      - REDIS_URL=redis://matching-redis:6379
+
+networks:
+  matching:
+    driver: bridge
+  backend:
+    driver: bridge
+  mongo-net:
+    driver: bridge
 
 volumes:
   mongo:
