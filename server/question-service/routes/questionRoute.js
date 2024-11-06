@@ -66,6 +66,21 @@ router.get("/categories/unique", async (req, res) => {
     }
 });
 
+router.get("/:topic/:complexity", async (req, res) => {
+    try {
+        const {topic, complexity} = req.params;
+        const regex = new RegExp(`(^|,)\\s*${topic}\\s*(,|$)`, 'i'); 
+        const complexityRegex = new RegExp(`${complexity}`, 'i')
+        const question = await Question.findOne({
+                    complexity: { $regex: complexityRegex },
+                    categories: { $regex: regex }
+                });
+        res.status(200).json(question);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // get easy
 router.get("/complexity/easy", async (req, res) => {
     try {

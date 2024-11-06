@@ -48,6 +48,11 @@ function AuthProvider({ children }) {
   const handleLogout = useCallback(() => {
     const cookies = new Cookies();
     cookies.remove("accessToken", { path: "/" });
+    cookies.remove("roomId", { path: "/" });
+    cookies.remove("code", { path: "/" });
+    cookies.remove("userId", { path: "/" });
+    cookies.remove("partnerId", { path: "/" });
+    cookies.remove("question", { path: "/" });
     setIsAuthenticated(false);
     setAccessToken("");
   }, []);

@@ -8,7 +8,9 @@ export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localh
 export const SVC_PORTS = {
   user: 3001,
   question: 3002,
-  matching: 3003
+  matching: 3003,
+  collaboration: 3004,
+  ai: 3005
 };
 
 // automatically generated from SVC_PORTS

@@ -18,16 +18,19 @@ import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SVC_ENDPOINTS } from "../../consts/api";
-import { socket } from "../../socket";
+import { matchingSocket } from "../../socket";
 import Cookies from "universal-cookie";
 import CircularWithValueLabel from "./CircularWithValueLabel";
+import { DIFFICULTY } from "../../consts/difficulty";
+import { Navigate, useNavigate } from "react-router-dom";
+import { collaborationSocket } from "../../socket";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
 const BlurredButton = styled(Button)(({ theme }) => ({
-  pointerEvents: 'none',  
-  color: theme.palette.grey[800], 
-  opacity: 0.5
+  pointerEvents: "none",
+  color: theme.palette.grey[800],
+  opacity: 0.5,
 }));
 
 const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
@@ -43,9 +46,10 @@ const CustomToggleGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 }));
 
 function QueueCard() {
+  const navigate = useNavigate();
 
   const [activeStep, setActiveStep] = useState(0);
-  const [difficulty, setDifficulty] = useState("");
+  const [difficulty, setDifficulty] = useState(DIFFICULTY.easy);
   const [topic, setTopic] = useState("");
   const [questionCategories, setQuestionCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,7 +66,7 @@ function QueueCard() {
   const handleTopicChange = (_, nextView) => {
     setTopic(nextView);
     if (nextView) {
-      setError(""); 
+      setError("");
     }
   };
 
@@ -86,7 +90,10 @@ function QueueCard() {
         `${SVC_ENDPOINTS.question}/questions/categories/unique`
       );
       if (response.status === 200) {
-        setQuestionCategories(Array.from(response.data).sort());
+        console.log(response.data.map((x) => x.category));
+        setQuestionCategories(
+          Array.from(response.data.map((x) => x.category)).sort()
+        );
       }
     } catch (error) {
       console.log(error);
@@ -95,27 +102,30 @@ function QueueCard() {
   };
 
   const handleStartQueue = () => {
-    if (!socket.connected) {
-      socket.connect();
-      socket.emit("connection");
-      console.log("User connected to socket");
+    if (!matchingSocket.connected) {
+      matchingSocket.connect();
+      matchingSocket.emit("connection");
+      console.log("User connected to matchingSocket");
     }
     setProgress(100);
     setQueueLoading(true);
-    
+
     clearInterval(timer);
-    const timerId = setInterval(() => {setProgress((prevProgress) => (prevProgress <= 0 ? 0 : prevProgress - 10/3));
+    const timerId = setInterval(() => {
+      setProgress((prevProgress) =>
+        prevProgress <= 0 ? 0 : prevProgress - 10 / 3
+      );
     }, 1000);
-    setTimer(timerId)
+    setTimer(timerId);
     const cookies = new Cookies();
     const userId = cookies.get("userId");
-    socket.emit("requestMatch", {
+    matchingSocket.emit("requestMatch", {
       userId: userId,
       topic: topic.category,
       difficulty: difficulty,
     });
 
-    socket.on("matchUpdate", (msg) => {
+    matchingSocket.on("matchUpdate", (msg) => {
       clearInterval(timerId);
       setQueueLoading(false);
       console.log("Message from match: ", msg);
@@ -124,7 +134,7 @@ function QueueCard() {
   };
 
   const handleEnd = () => {
-    socket.disconnect();
+    matchingSocket.disconnect();
     setQueueLoading(false);
     setQueueState({});
     setProgress(100);
@@ -132,11 +142,24 @@ function QueueCard() {
   };
 
   useEffect(() => {
+    if (queueState.status === "match_found") {
+      console.log("here");
+      const temp_partnerId = queueState.partnerId;
+      const temp_roomId = queueState.roomId;
+      const temp_complexity = queueState.difficulty;
+      handleEnd();
+      console.log(queueState);
+      navigate("/collaborationpage", {
+        state: { partnerId: temp_partnerId, roomId: temp_roomId, topic: topic, complexity: temp_complexity},
+      });
+    }
     return () => {
-      socket.off("matchUpdate");
-      socket.off("disconnect");
+      matchingSocket.off("matchUpdate");
+
+      //probably don't need
+      //matchingSocket.off("disconnect");
     };
-  }, []);
+  }, [queueState]);
 
   useEffect(() => {
     if (activeStep === 1 && questionCategories.length === 0) {
@@ -146,7 +169,7 @@ function QueueCard() {
 
   return (
     <Card
-      outlined
+      variant="outlined"
       sx={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
     >
       <CardContent>
@@ -161,21 +184,33 @@ function QueueCard() {
       <Divider />
       <CardContent sx={{ flex: "1 1 auto" }}>
         {activeStep === 0 && (
+           <Box
+           sx={{
+             display: "flex",
+             justifyContent: "center", // Centers horizontally
+             alignItems: "center", // Centers vertically
+             height: "100%", // Ensures full height for vertical centering
+           }}
+         >
           <ToggleButtonGroup
             value={difficulty}
             onChange={handleDifficultyChange}
             exclusive
           >
-            <ToggleButton value="easy" aria-label="easy">
+            <ToggleButton value={DIFFICULTY.easy} aria-label={DIFFICULTY.easy}>
               Easy
             </ToggleButton>
-            <ToggleButton value="medium" aria-label="medium">
+            <ToggleButton
+              value={DIFFICULTY.medium}
+              aria-label={DIFFICULTY.medium}
+            >
               Medium
             </ToggleButton>
-            <ToggleButton value="hard" aria-label="hard">
+            <ToggleButton value={DIFFICULTY.hard} aria-label={DIFFICULTY.hard}>
               Hard
             </ToggleButton>
           </ToggleButtonGroup>
+          </Box>
         )}
         {activeStep === 1 && (
           <Box>
@@ -187,10 +222,10 @@ function QueueCard() {
                 onChange={handleTopicChange}
                 exclusive
               >
-                {questionCategories.map((category) => {
+                {questionCategories.map((category, index) => {
                   return (
-                    <ToggleButton value={category}>
-                      {category.category}
+                    <ToggleButton key={`cat${index}`} value={category}>
+                      {category}
                     </ToggleButton>
                   );
                 })}
@@ -199,22 +234,57 @@ function QueueCard() {
           </Box>
         )}
         {activeStep === 2 && (
-          <Box>
-            {queueLoading && <div><Typography variant="h3">Finding You A Match! :D</Typography><CircularWithValueLabel value={progress}/></div>}
+          <Box
+          sx={{
+            display: "flex",
+            flexDirection: 'column', 
+            justifyContent: "center", 
+            alignItems: "center", 
+            height: "100%", 
+          }}
+        >
+            {queueLoading && (
+              <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column', 
+                justifyContent: 'center',
+                alignItems: 'center', 
+                height: '100%', 
+              }}
+            >
+                <Typography variant="h4">Finding You A Match! :D</Typography>
+                <CircularWithValueLabel value={progress} />
+                <Button color="error" variant="contained" onClick={handleEnd}>Cancel</Button>
+              </Box>
+            )}
             {!queueLoading && queueState.status === "timeout" && (
-              <Typography variant="h3">No Match Found! D:</Typography>
+              
+              <Typography variant="h4">No Match Found! D:</Typography>
+        
             )}
-            {!queueLoading && queueState.status === "match_found" && (
-              <Typography variant="h4">
-                Queued with: {queueState.partnerId}
-              </Typography>
+            {queueLoading || collaborationSocket.connected && (
+              <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column', 
+                justifyContent: 'center',
+                alignItems: 'center', 
+                height: '100%', 
+              }}
+            >
+                <BlurredButton variant="contained" >Start</BlurredButton>
+                <p>Please end all ongoing session before matching again!</p>
+              </Box>
             )}
-            {queueLoading ? (
-              <BlurredButton>Start</BlurredButton>
-            ) : (
-              <Button onClick={handleStartQueue}>Start</Button>
+            {!queueLoading && queueState.status === "timeout"  && !collaborationSocket.connected && (
+              <Button variant="contained" onClick={handleStartQueue}>Retry</Button>
             )}
-            <Button onClick={handleEnd}>Quit</Button>
+            {!queueLoading && queueState.status !== "timeout" && !collaborationSocket.connected && (
+              <div>
+                <Button variant="contained" onClick={handleStartQueue}>Start</Button>
+              </div>
+            )}
           </Box>
         )}
         {error && <Typography color="error">{error}</Typography>}
