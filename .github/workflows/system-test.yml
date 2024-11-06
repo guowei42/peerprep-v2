@@ -65,5 +65,5 @@ jobs:
             npm run start &
       - name: Run Tests
         run: |
-            sleep 20
+            sleep 60
             xvfb-run --server-args="-screen 0 1024x768x24" npm run test

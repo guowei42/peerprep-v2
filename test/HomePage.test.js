@@ -6,7 +6,7 @@ let url = ROOT_URL;
 
 beforeAll(async () => {
     driver = await getWebDriver();
-}, 10 * 1000);
+}, 20 * 1000);
 
 beforeEach(async () => {
     await driver.get(url);
