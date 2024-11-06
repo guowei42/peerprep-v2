@@ -1,9 +1,12 @@
+import { AppBar, Toolbar, Typography, Box, Button, ButtonGroup, CircularProgress, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Box, CircularProgress } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 function Header() {
+  // TEMP
+  let navigate = useNavigate();
+
   const { isAuthenticated, checkIsAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 

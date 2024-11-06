@@ -8,6 +8,7 @@ import HomePage from "../components/HomePage/HomePage";
 import LoginWrapper from "../components/Login/LoginWrapper";
 import Login from "../components/Login/components/Login";
 import Signup from "../components/Login/components/Signup";
+import CollaborationPage from "../components/CollaborationPage";
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
           {
             path: "/questionpage",
             element: <QuestionPage />,
+          },
+          {
+            path: "/collaborationpage",
+            element: <CollaborationPage />,
           },
         ],
       },

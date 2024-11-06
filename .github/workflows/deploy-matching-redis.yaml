@@ -1,0 +1,55 @@
+name: Build and Deploy matching-redis to GKE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: peerprep-cluster-1
+  GKE_ZONE: asia-southeast1
+  DEPLOYMENT_NAME: matching-redis
+  REPOSITORY_NAME: peerprep
+  IMAGE: redis
+
+jobs:
+  setup-deploy:
+    name: Setup and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: ${{ secrets.GKE_SA_KEY }}
+
+    # Setup gcloud CLI
+    - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
+      with:
+        project_id: ${{ secrets.GKE_PROJECT }}
+
+    # Configure Docker to use the gcloud command-line tool as a credential
+    # helper for authentication
+    - run: |-
+        gcloud auth configure-docker $GKE_ZONE-docker.pkg.dev --quiet
+
+    # Get the GKE credentials so we can deploy to the cluster
+    - uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+
+    # Deploy Redis to the GKE cluster
+    - name: Deploy Redis
+      run: |-
+        kubectl apply -f kubernetes/redis
+        kubectl rollout status deployment/$DEPLOYMENT_NAME
+        kubectl get services -o wide

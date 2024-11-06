@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matching-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: matching-redis
+  template:
+    metadata:
+      labels:
+        app: matching-redis
+    spec:
+      containers:
+      - name: matching-matching-redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
