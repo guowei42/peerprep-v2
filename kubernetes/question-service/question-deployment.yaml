@@ -20,6 +20,18 @@ spec:
           ports:
             - name: qn-service
               containerPort: 3002
+          env:
+          - name: ENV
+            valueFrom:
+              secretKeyRef:
+                name: env
+                key: ENV
+          - name: DB_CLOUD_URI
+            valueFrom:
+              secretKeyRef:
+                name: env
+                key: DB_URI_QUESTION
+          
       restartPolicy: Always
 
       
