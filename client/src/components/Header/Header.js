@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, CircularProgress, Stack } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, Button, ButtonGroup, CircularProgress, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
@@ -13,44 +13,38 @@ function Header() {
   useEffect(() => {
     const authenticate = async () => {
       await checkIsAuthenticated();
-      setLoading(false); 
+      setLoading(false);
     };
     authenticate();
   }, [checkIsAuthenticated]);
 
   return (
-    <Stack direction={"row"} justifyContent={"space-between"} padding={"0 10px 0 10px"}>
-      <h1 
-        onClick={() => navigate("/")} 
-        style={{ cursor: 'pointer', textDecoration: 'none', color: 'inherit' }}
-      >
-        PeerPrep
-      </h1>
-      <Box display={"flex"} alignItems={"center"}>
-      {
-        // TEMP
-      }
-      <ButtonGroup>
-        <Button onClick={() => navigate("/questionpage")}>
-          Questions
-        </Button>
-      </ButtonGroup>
-      {
-        // ^^^^^^^^^^^^^^^^
-      }
-        {loading ? (
-          <CircularProgress />
-        ) : isAuthenticated ? (
-          <Link to="/logout">
-            <Button variant="contained">Logout</Button>
+    <AppBar position="static" sx={{ backgroundColor: "#e0e0e0" }}>
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', textAlign: 'left' }}>
+        <Link to="/" style={{ textDecoration: "none", color: "#1976d2"}}>
+          PeerPrep
           </Link>
-        ) : (
-          <Link to="/login">
-            <Button variant="contained">Login</Button>
-          </Link>
-        )}
-      </Box>
-    </Stack>
+        </Typography>
+        <Box>
+          {loading ? (
+            <CircularProgress color="inherit" size={24} />
+          ) : isAuthenticated ? (
+            <Link to="/logout" style={{ textDecoration: "none" }}>
+              <Button variant="contained" sx={{ backgroundColor: "#1976d2", color: "#fff" }}>
+                Logout
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/login" style={{ textDecoration: "none" }}>
+              <Button variant="contained" sx={{ backgroundColor: "#1976d2", color: "#fff" }}>
+                Login
+              </Button>
+            </Link>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }
 

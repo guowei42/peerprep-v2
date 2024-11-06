@@ -1,45 +1,64 @@
-import { Grid2, styled } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import QueueCard from "./QueueCard";
-import OngoingCard from "./OngoingCard";
-
-// top-left, top-right, bottom-right, bottom-left
-const FlexGrid = styled(Grid2)(({ flex_amount }) => ({
-  display: "flex",
-  flex: `${flex_amount} 1 0`,
-}));
+import BasicCard from "./BasicCard";
 
 function HomePage() {
+
   return (
     <>
       <Grid2
         container
-        spacing={2}
-        size={12}
+        spacing={3}
         sx={{
-          display: "flex",
-          flex: "1 1 auto",
-          padding: "35px 0px 35px 0px",
+          padding: "35px 0",
+          justifyContent: "center"
         }}
       >
-        <Grid2 container direction={"column"} size={7}>
-          <FlexGrid flex_amount={0.4}>
-            <div>profile</div>
-          </FlexGrid>
-          <FlexGrid flex_amount={1}>
-            <div>past matches</div>
-          </FlexGrid>
+        <Grid2 item xs={12} md={7} container spacing={2} direction="column">
+          
+          <Grid2 item>
+            <BasicCard 
+              title="View All Questions" 
+              description="View all the questions you can attempt."
+              label="Questions List"
+              link="/questionpage"
+            />
+          </Grid2>
+          
+          <Grid2 item>
+            <BasicCard 
+              title="Past Question Attempts" 
+              description="View your previous question attempts and 
+                their solutions to track your progress and learn from 
+                your mistakes."
+              label="Profile"
+            />
+          </Grid2>
+
+          <Grid2 item>
+            <BasicCard 
+              title="Previous Matches" 
+              description="Enjoyed collaborating with someone? View 
+                your past matches and send a friend request to your previous 
+                matches."
+              label="Previous Matches"
+            />
+          </Grid2>
         </Grid2>
-        <Grid2 container size={5} direction={"column"}>
-          <FlexGrid flex_amount={1}>
-            <OngoingCard/>
-          </FlexGrid>
-          <FlexGrid flex_amount={1}>
+
+        <Grid2 item xs={12} md={5} container spacing={2} direction="column">
+          <Grid2 item>
+            <div>Ongoing Session</div>
+          </Grid2>
+          <Grid2 item>
             <QueueCard />
-          </FlexGrid>
+          </Grid2>
         </Grid2>
+
       </Grid2>
     </>
   );
 }
 
 export default HomePage;
+

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import LandingPage from "../components/LandingPage/LandingPage";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, isLoading, checkIsAuthenticated } = useAuth();
@@ -16,7 +17,7 @@ const ProtectedRoute = () => {
   return (
     <>
       {!isAuthenticated ? (
-        <Navigate to="/" replace />
+        <LandingPage/>
       ) : (
         <Outlet context={isAuthenticated} />
       )}
