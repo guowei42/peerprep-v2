@@ -33,14 +33,14 @@ spec:
             initialDelaySeconds:  20
             periodSeconds: 20
           resources:
-              requests:
-                cpu: 250m
-                memory: 512Mi
-                ephemeral-storage: 500Mi
-              limits:
-                cpu: 500m
-                memory: 1Gi
-                ephemeral-storage: 1Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+              ephemeral-storage: 500Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+              ephemeral-storage: 1Gi
       restartPolicy: Always
 
       
