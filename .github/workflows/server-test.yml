@@ -97,4 +97,62 @@ jobs:
       - name: Install User Service Dependencies
         run: npm ci
       - name: Run Tests
+        run: npm run test 
+  collaboration-service:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./server/collaboration-service
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENV: PROD
+          envkey_PORT_COLLABORATION: 3004
+          directory: .
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+      - name: Install Collaboration Service Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm run test
+  ai-service:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./server/ai-service
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENV: PROD
+          envkey_PORT_AI: 3005
+          directory: .
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+      - name: Install AI Service Dependencies
+        run: npm ci
+      - name: Run Tests
         run: npm run test
