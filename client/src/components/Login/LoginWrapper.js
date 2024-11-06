@@ -1,5 +1,4 @@
 import { Box, Stack, styled, TextField } from "@mui/material";
-import React from "react";
 import { ReactComponent as Background } from "../../assets/background.svg";
 import { ReactComponent as Logo } from "../../assets/logo.svg";
 

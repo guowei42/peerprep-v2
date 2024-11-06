@@ -1,0 +1,159 @@
+name: Automated Testing (Server)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  matching-service:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./server/matching-service
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENV: PROD
+          envkey_PORT_MATCHING: 3003
+          directory: .
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+      - name: Install Matching Service Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm run test
+  question-service:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./server/question-service
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENV: PROD
+          envkey_PORT_QUESTION: 3002
+          envkey_DB_URI_QUESTION: mongodb://localhost:27017/question
+          directory: .
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+      - name: Install Question Service Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm run test
+  user-service:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./server/user-service
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENV: PROD
+          envkey_PORT_USER: 3001
+          envkey_DB_URI_USER: mongodb://localhost:27017/user
+          envkey_JWT_SECRET: secret
+          directory: .
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+      - name: Install User Service Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm run test 
+  collaboration-service:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./server/collaboration-service
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENV: PROD
+          envkey_PORT_COLLABORATION: 3004
+          directory: .
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+      - name: Install Collaboration Service Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm run test
+  ai-service:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./server/ai-service
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENV: PROD
+          envkey_PORT_AI: 3005
+          envkey_GEMINI_API_KEY: ''
+          directory: .
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+      - name: Install AI Service Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm run test

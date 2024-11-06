@@ -70,6 +70,7 @@ io.on("connection", (socket) => {
 });
 
 function findSocketByUserId(userId) {
+    // eslint-disable-next-line no-unused-vars
     for (let [id, socket] of io.of("/").sockets) {
         if (socket.userId === userId) {
             return socket;

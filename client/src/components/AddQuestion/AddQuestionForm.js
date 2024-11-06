@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { SVC_ENDPOINTS } from "../../consts/api";
 
 function AddQuestionForm(props) {
@@ -80,7 +80,7 @@ function AddQuestionForm(props) {
         {newQuestion ? (
           <div>
             <Typography align="center" color="secondary">
-              Successfully submitted question "{newQuestion.title}".
+              Successfully submitted question &ldquo;{newQuestion.title}&rdquo;.
             </Typography>
           </div>
         ) : (
