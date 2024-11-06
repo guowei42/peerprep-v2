@@ -72,6 +72,7 @@ function CollaborationPage() {
     if (chatMessage.trim() !== "") {
       chatSocket.emit("send_message", {
         roomId: cookies.get("roomId"),
+        senderId: cookies.get("userId"),
         message: chatMessage,
       });
       setChatMessage("");
@@ -175,8 +176,18 @@ function CollaborationPage() {
         <h2>Chat with your partner</h2>
         <Paper style={{ padding: "10px", marginBottom: "10px", height: "200px", overflowY: "auto" }}>
           {chatHistory.map((msg, index) => (
-            <Typography key={index} variant="body1">
-              {msg}
+            <Typography
+              key={index}
+              variant="body1"
+              style={{
+                textAlign: msg.senderId === cookies.get("userId") ? "right" : "left",
+                backgroundColor: msg.senderId === cookies.get("userId") ? "#e0f7fa" : "#f5f5f5",
+                padding: "8px",
+                borderRadius: "4px",
+                margin: "4px 0",
+              }}
+            >
+              {msg.senderId === cookies.get("userId") ? "You" : "Partner"}: {msg.message}
             </Typography>
           ))}
         </Paper>
@@ -191,7 +202,7 @@ function CollaborationPage() {
         </Button>
       </div>
 
-      
+
       <div style = {{flex: '1'}}>
         <h2>Type below to ask help from AI!</h2>
         {aiResponse !== null && (
