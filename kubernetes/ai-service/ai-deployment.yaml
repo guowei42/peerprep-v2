@@ -20,6 +20,17 @@ spec:
           ports:
             - name: ai-service
               containerPort: 3005
+          env:
+          - name: ENV
+            valueFrom:
+              secretKeyRef:
+                name: env
+                key: ENV
+          - name: GEMINI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: env
+                key: GEMINI_API_KEY
       restartPolicy: Always
 
       
