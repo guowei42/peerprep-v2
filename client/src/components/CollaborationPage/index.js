@@ -2,9 +2,15 @@ import { javascript } from "@codemirror/lang-javascript";
 import CodeMirror from "@uiw/react-codemirror";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { collaborationSocket } from "../../socket";
+import { chatSocket, collaborationSocket } from "../../socket";
 import Cookies from "universal-cookie";
-import { Button, TextField, Paper, Typography, CircularProgress} from "@mui/material";
+import { 
+  Button, 
+  TextField, 
+  Paper, 
+  Typography, 
+  CircularProgress, 
+} from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import axios from "axios";
 import { SVC_ENDPOINTS } from "../../consts/api";
@@ -19,6 +25,9 @@ function CollaborationPage() {
   const [aiText, setAiText] = useState(null);
   const [aiResponse, setAiReponse] = useState(null);
   const [isAiLoading, setisAiLoading] = useState(false);
+  // for chat
+  const [chatMessage, setChatMessage] = useState("");
+  const [chatHistory, setChatHistory] = useState([]);
   const navigate = useNavigate();
   const onChange = (val, viewUpdate) => {
     setValue(val);
@@ -32,6 +41,8 @@ function CollaborationPage() {
   const handleEnd = () => {
     collaborationSocket.off();
     collaborationSocket.disconnect();
+    chatSocket.off();
+    chatSocket.disconnect();
     cookies.remove("roomId");
     cookies.remove("partnerId");
     cookies.remove("code");
@@ -54,6 +65,18 @@ function CollaborationPage() {
     const response = await axios.post(`${SVC_ENDPOINTS.ai}/ai/prompt`, payload);
     setisAiLoading(false);
     setAiReponse(response.data); 
+  };
+
+  // handle a message send
+  const handleSendMessage = () => {
+    if (chatMessage.trim() !== "") {
+      chatSocket.emit("send_message", {
+        roomId: cookies.get("roomId"),
+        senderId: cookies.get("userId"),
+        message: chatMessage,
+      });
+      setChatMessage("");
+    }
   };
 
   useEffect(() => {
@@ -95,16 +118,26 @@ function CollaborationPage() {
   
       fetchQuestion();      
     }
-      setIsLoading(false);
-      setQuestion(cookies.get("question"));
+    setIsLoading(false);
+    setQuestion(cookies.get("question"));
+    
+    if (!chatSocket.connected) {
+      chatSocket.connect();
+      chatSocket.emit("join_room", { roomId: cookies.get("roomId") });
+      console.log("User connected to chat socket");
+    }
 
-      collaborationSocket.on("code_update", (msg) => {
-        console.log(msg)
-        setValue(msg);
-      });
-      const initialCode = cookies.get("code");
-      if (initialCode) {
-      setValue(initialCode);
+    chatSocket.on("receive_message", (msg) => {
+      setChatHistory((prev) => [...prev, msg]); // Update chat history with new messages
+    });
+
+    collaborationSocket.on("code_update", (msg) => {
+      console.log(msg)
+      setValue(msg);
+    });
+    const initialCode = cookies.get("code");
+    if (initialCode) {
+    setValue(initialCode);
     }
     
 
@@ -113,6 +146,7 @@ function CollaborationPage() {
     return () => {
       collaborationSocket.off("code_change");
       collaborationSocket.off("code_update");
+      chatSocket.off("receive_message")
     };
   }, []);
 
@@ -135,6 +169,40 @@ function CollaborationPage() {
       )}
       <Button color="error" variant="contained" onClick={handleEnd}>END SESSION</Button>
       </div>
+
+
+      {/* chat section */}
+      <div style={{ flex: "1" }}>
+        <h2>Chat with your partner</h2>
+        <Paper style={{ padding: "10px", marginBottom: "10px", height: "200px", overflowY: "auto" }}>
+          {chatHistory.map((msg, index) => (
+            <Typography
+              key={index}
+              variant="body1"
+              style={{
+                textAlign: msg.senderId === cookies.get("userId") ? "right" : "left",
+                backgroundColor: msg.senderId === cookies.get("userId") ? "#e0f7fa" : "#f5f5f5",
+                padding: "8px",
+                borderRadius: "4px",
+                margin: "4px 0",
+              }}
+            >
+              {msg.senderId === cookies.get("userId") ? "You" : "Partner"}: {msg.message}
+            </Typography>
+          ))}
+        </Paper>
+        <TextField
+          fullWidth
+          label="Type your message"
+          value={chatMessage}
+          onChange={(e) => setChatMessage(e.target.value)}
+        />
+        <Button variant="contained" endIcon={<SendIcon />} onClick={handleSendMessage}>
+          Send
+        </Button>
+      </div>
+
+
       <div style = {{flex: '1'}}>
         <h2>Type below to ask help from AI!</h2>
         {aiResponse !== null && (

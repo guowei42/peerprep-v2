@@ -84,6 +84,16 @@ services:
     environment:
       - ENV
       - GEMINI_API_KEY=${GEMINI_API_KEY}
+  chat:
+    build: 
+      context: ./chat-service
+      dockerfile: Dockerfile
+      args:
+        - PORT=${PORT_CHAT}
+    networks:
+      - backend
+    ports:
+      - ${PORT_CHAT}:${PORT_CHAT}
 
 networks:
   matching:

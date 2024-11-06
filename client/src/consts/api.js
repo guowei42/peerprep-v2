@@ -10,7 +10,8 @@ export const SVC_PORTS = {
   question: 3002,
   matching: 3003,
   collaboration: 3004,
-  ai: 3005
+  ai: 3005,
+  chat: 3006
 };
 
 // automatically generated from SVC_PORTS
