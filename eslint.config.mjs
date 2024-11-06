@@ -31,7 +31,7 @@ export default [
     rules: {
       // rule overrides
       "no-unused-vars": [
-        "error",
+        "warn",
         {
           vars: "all",
           args: "none",
