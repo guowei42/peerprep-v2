@@ -8,3 +8,7 @@ export const matchingSocket = io(SVC_ENDPOINTS.matching, {
 export const collaborationSocket = io(SVC_ENDPOINTS.collaboration, {
   autoConnect: false
 })
+
+export const chatSocket = io(SVC_ENDPOINTS.chat, {
+  autoConnect: false
+})
