@@ -10,7 +10,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: prod
+  GKE_CLUSTER: peerprep-cluster-1
   GKE_ZONE: asia-southeast1
   DEPLOYMENT_NAME: question-service
   REPOSITORY_NAME: peerprep
