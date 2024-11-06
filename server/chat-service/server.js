@@ -21,11 +21,11 @@ io.on("connection", (socket) => {
   });
 
   // Handle sending messages in a chat room
-  socket.on("send_message", ({ roomId, message }) => {
+  socket.on("send_message", ({ roomId, senderId, message }) => {
     const roomName = `${roomId}`;
     console.log(`Message in room ${roomName}: ${message}`);
     // Broadcast message to all users in the room
-    io.to(roomName).emit("receive_message", message);
+    io.to(roomName).emit("receive_message", {senderId, message});
   });
 
   // Handle disconnection
