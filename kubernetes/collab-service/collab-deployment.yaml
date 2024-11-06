@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collab-service
+  labels:
+    app: collab-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: collab-service
+  template:
+    metadata:
+      labels:
+        app: collab-service
+    spec:
+      containers:
+        - name: collab-service
+          image: asia-southeast1-docker.pkg.dev/peerprep-440702/peerprep/collaboration:latest
+          ports:
+            - name: collab-service
+              containerPort: 3004
+      restartPolicy: Always
+
+      
