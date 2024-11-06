@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - server/match-service/**
+      - server/matching-service/**
   workflow_dispatch:
 
 env:
@@ -57,7 +57,7 @@ jobs:
           --tag "$GKE_ZONE-docker.pkg.dev/$PROJECT_ID/$REPOSITORY_NAME/$IMAGE:latest" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          ./server/match-service
+          ./server/matching-service
 
     # Push the Docker image to Google Artifact Registry
     - name: Publish
