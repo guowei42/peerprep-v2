@@ -12,7 +12,7 @@ export const AuthContext = createContext({
     const cookies = new Cookies();
     cookies.remove("accessToken", { path: "/" });
   },
-  isLoading: true
+  isLoading: true,
 });
 
 export const useAuth = () => useContext(AuthContext);
