@@ -148,6 +148,7 @@ jobs:
         with:
           envkey_ENV: PROD
           envkey_PORT_AI: 3005
+          envkey_GEMINI_API_KEY: ''
           directory: .
           file_name: .env
           fail_on_empty: false

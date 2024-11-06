@@ -44,6 +44,7 @@ jobs:
           envkey_PORT_MATCHING: 3003
           envkey_PORT_COLLABORATION: 3004
           envkey_PORT_AI: 3005
+          envkey_GEMINI_API_KEY: ''
           envkey_DB_URI_QUESTION: mongodb://localhost:27017/question
           envkey_DB_URI_USER: mongodb://localhost:27017/user
           envkey_JWT_SECRET: secret
