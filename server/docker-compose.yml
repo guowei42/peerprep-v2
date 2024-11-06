@@ -1,4 +1,13 @@
 services:
+  gateway:
+    build:
+      context: ../api-gateway
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    ports:
+      - "80:80"
+
   user:
     build:
       context: ./user-service
@@ -7,6 +16,8 @@ services:
         - PORT=${PORT_USER}
     ports:
       - ${PORT_USER}:${PORT_USER}
+    networks:
+      - backend
     environment:
       - ENV
       - DB_CLOUD_URI=${DB_URI_USER}
@@ -21,6 +32,8 @@ services:
         - PORT=${PORT_QUESTION}
     ports:
       - ${PORT_QUESTION}:${PORT_QUESTION}
+    networks:
+      - backend
     environment:
       - ENV
       - DB_CLOUD_URI=${DB_URI_QUESTION}
@@ -31,6 +44,8 @@ services:
       dockerfile: Dockerfile
       args:
         - PORT=${PORT_COLLABORATION}
+    networks:
+      - backend
     ports:
       - ${PORT_COLLABORATION}:${PORT_COLLABORATION}
 
@@ -53,6 +68,7 @@ services:
       - matching-redis
     networks:
       - matching
+      - backend
     environment:
       - REDIS_URL=redis://matching-redis:6379
   ai:
@@ -63,10 +79,14 @@ services:
         - PORT=${PORT_AI}
     ports:
       - ${PORT_AI}:${PORT_AI}
+    networks:
+      - backend
     environment:
       - ENV
       - GEMINI_API_KEY=${GEMINI_API_KEY}
 
 networks:
   matching:
+    driver: bridge
+  backend:
     driver: bridge
