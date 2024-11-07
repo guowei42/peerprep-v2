@@ -35,4 +35,8 @@ jobs:
       - name: Install Client Dependencies
         run: npm ci
       - name: Run Tests
-        run: npm run test
+        run: npm run ci -- --coverage
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
