@@ -6,7 +6,7 @@ metadata:
     app: gateway-ingress
   annotations:
     kubernetes.io/ingressClassName: "gce"
-    # set static ip later
+    kubernetes.io/ingress.global-static-ip-name: "peerprep-g42"
 spec:
   rules:
   - http:
