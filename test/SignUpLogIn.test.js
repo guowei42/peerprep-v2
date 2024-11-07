@@ -4,10 +4,11 @@ let {
   findButtonContainingText,
   waitForUrl,
 } = require("./utils/driver");
-let { ROOT_URL, TEST_USER } = require("./utils/const");
+let { ROOT_URL, TEST_USER, DB_URI_USER } = require("./utils/const");
 const { By, until } = require("selenium-webdriver");
+const { getConn, clearAll } = require("./utils/db");
 
-let driver;
+let driver, usersConn;
 let url = ROOT_URL;
 let urlSignup = url + "/signup";
 let urlLogin = url + "/login";
@@ -25,10 +26,15 @@ let urlLogin = url + "/login";
 describe("Sign Up/Log In test", () => {
   beforeAll(async () => {
     driver = await getWebDriver();
+    usersConn = await getConn(DB_URI_USER);
   });
 
   afterAll(async () => {
     if (driver) await driver.quit();
+  });
+
+  beforeEach(async () => {
+    clearAll(usersConn);
   });
 
   test("simulate successful user sign up and log in from home page", async () => {
