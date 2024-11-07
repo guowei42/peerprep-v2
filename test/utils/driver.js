@@ -1,24 +1,10 @@
-const { Builder, By } = require("selenium-webdriver");
+const { Builder, By, until } = require("selenium-webdriver");
 
-module.exports.ROOT_URL = "http://localhost:3000";
-
-module.exports.TIMEOUT = 30 * 1000;
-
-module.exports.TEST_USER = {
-  username: "testuser1",
-  email: "testuser1@example.com",
-  password: "testPassword1",
-};
-
+// driver utility methods
 module.exports.getWebDriver = async () => {
   let browser = process.env.BROWSER;
   let driver = await new Builder().forBrowser(browser).build();
   return driver;
-};
-
-module.exports.scrollTo = async (driver, element) => {
-  driver.executeScript("arguments[0].scrollIntoView(false)", element);
-  driver.sleep(300);
 };
 
 module.exports.findTextInputWithLabel = async (driver, label) => {
@@ -31,4 +17,8 @@ module.exports.findTextInputWithLabel = async (driver, label) => {
 module.exports.findButtonContainingText = async (driver, text) => {
   let button = await driver.findElement(By.xpath(`//button[contains(text(),'${text}')]`));
   return button;
+};
+
+module.exports.waitForUrl = async (driver, url) => {
+  await driver.wait(until.urlIs(url), 5000);
 };

@@ -1,10 +1,10 @@
 let {
   getWebDriver,
-  ROOT_URL,
-  TEST_USER,
   findTextInputWithLabel,
   findButtonContainingText,
-} = require("./utils");
+  waitForUrl,
+} = require("./utils/driver");
+let { ROOT_URL, TEST_USER } = require("./utils/const");
 const { By, until } = require("selenium-webdriver");
 
 let driver;
@@ -27,24 +27,23 @@ describe("Sign Up/Log In test", () => {
     driver = await getWebDriver();
   });
 
-  beforeEach(async () => {
-    await driver.get(url);
-  });
-
   afterAll(async () => {
     if (driver) await driver.quit();
   });
 
-  test("simulate successful user sign up and log in", async () => {
+  test("simulate successful user sign up and log in from home page", async () => {
+    // go to home page
+    await driver.get(url);
+
     // click log in
     let loginButton = await findButtonContainingText(driver, "Login");
     await loginButton.click();
-    await driver.wait(until.urlIs(urlLogin), 3000);
+    await waitForUrl(driver, urlLogin);
 
     // click sign up
     let signupLink = await driver.findElement(By.linkText("here"));
     await signupLink.click();
-    await driver.wait(until.urlIs(urlSignup), 3000);
+    await waitForUrl(driver, urlSignup);
 
     // fill sign up form
     let usernameField = await findTextInputWithLabel(driver, "Username");
@@ -57,7 +56,7 @@ describe("Sign Up/Log In test", () => {
     await submit.click();
 
     // check redirect to login
-    await driver.wait(until.urlIs(urlLogin), 3000);
+    await waitForUrl(driver, urlLogin);
 
     // fill log in form
     emailField = await findTextInputWithLabel(driver, "Email");
@@ -75,6 +74,6 @@ describe("Sign Up/Log In test", () => {
     await logOutButton.click();
 
     // check redirect to login page
-    await driver.wait(until.urlIs(urlLogin), 3000);
+    await waitForUrl(driver, urlLogin);
   });
 });

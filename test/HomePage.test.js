@@ -1,4 +1,5 @@
-let { getWebDriver, ROOT_URL } = require("./utils");
+let { getWebDriver } = require("./utils/driver");
+let { ROOT_URL } = require("./utils/const");
 const { By } = require("selenium-webdriver");
 
 let driver;
