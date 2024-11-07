@@ -6,7 +6,8 @@
     "test": "jest",
     "serve": "node server.js",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "ci": "jest --ci --coverage"
   },
   "keywords": [],
   "author": "",
