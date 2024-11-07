@@ -35,4 +35,4 @@ jobs:
       - name: Install Client Dependencies
         run: npm ci
       - name: Run Tests
-        run: npm run test
+        run: npm run ci
