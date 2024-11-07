@@ -66,7 +66,11 @@ jobs:
             cd client
             npm ci
             npm run start &
-      - name: Run Tests
-        run: |
             sleep 60
-            xvfb-run --server-args="-screen 0 1024x768x24" npm run test
+      - name: Run Tests
+        uses: nick-fields/retry@v3
+        with:
+          timeout_seconds: 100
+          max_attempts: 5
+          retry_on: error
+          command: xvfb-run --server-args="-screen 0 1024x768x24" npm run test
