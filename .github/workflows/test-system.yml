@@ -47,7 +47,7 @@ jobs:
           envkey_PORT_MATCHING: 3003
           envkey_PORT_COLLABORATION: 3004
           envkey_PORT_AI: 3005
-          envkey_PORT_CHAT: 3006 
+          envkey_PORT_CHAT: 3006
           envkey_GEMINI_API_KEY: ''
           envkey_DB_URI_QUESTION: ${{ env.DB_URI_QUESTION }}
           envkey_DB_URI_USER: ${{ env.DB_URI_USER }}
