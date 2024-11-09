@@ -10,6 +10,7 @@ import {
   findUserByUsernameOrEmail as _findUserByUsernameOrEmail,
   updateUserById as _updateUserById,
   updateUserPrivilegeById as _updateUserPrivilegeById,
+  deleteAllUsers_FOR_TESTING as _deleteAllUsers_FOR_TESTING,
 } from "../model/repository.js";
 
 export async function createUser(req, res) {
@@ -153,6 +154,16 @@ export async function deleteUser(req, res) {
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Unknown error when deleting user!" });
+  }
+}
+
+export async function deleteAllUsers_FOR_TESTING(req, res) {
+  try {
+    await _deleteAllUsers_FOR_TESTING();
+    return res.status(200).json({ message: `Deleted all users successfully` });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: err });
   }
 }
 

@@ -17,6 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       BROWSER: ${{ matrix.browser }}
+      DB_URI: mongodb://localhost:27017/
       DB_URI_QUESTION: mongodb://localhost:27017/question
       DB_URI_USER: mongodb://localhost:27017/user
     steps:
@@ -40,7 +41,7 @@ jobs:
       - name: Make server envfile
         uses: SpicyPizza/create-envfile@v2.0
         with:
-          envkey_ENV: PROD
+          envkey_ENV: TEST
           envkey_PORT_USER: 3001
           envkey_PORT_QUESTION: 3002
           envkey_PORT_MATCHING: 3003
