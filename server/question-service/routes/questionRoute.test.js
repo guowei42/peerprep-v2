@@ -254,11 +254,14 @@ describe("PUT /:id", () => {
   };
 
   it("should update a question by ID with status 200", async () => {
-    Question.findById.mockResolvedValue({ save: jest.fn().mockResolvedValue(updatedQuestion) });
+    let qn = { save: jest.fn().mockResolvedValue(updatedQuestion) };
+    Question.findById.mockResolvedValue(qn);
     const res = await request(app)
       .put("/" + id)
       .send(updatedQuestion);
     expect(Question.findById).toHaveBeenCalledWith(id);
+    expect(qn).toEqual(expect.objectContaining(updatedQuestion));
+    expect(qn.save).toHaveBeenCalled();
     expect(res.status).toBe(200);
     expect(res.body).toEqual(updatedQuestion);
   });
