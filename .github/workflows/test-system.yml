@@ -17,9 +17,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       BROWSER: ${{ matrix.browser }}
-      DB_URI: mongodb://localhost:27017/
-      DB_URI_QUESTION: mongodb://localhost:27017/question
-      DB_URI_USER: mongodb://localhost:27017/user
+      DB_URI: mongodb://172.17.0.1:27017/
+      DB_URI_QUESTION: mongodb://172.17.0.1:27017/question
+      DB_URI_USER: mongodb://172.17.0.1:27017/user
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,7 +47,7 @@ jobs:
           envkey_PORT_MATCHING: 3003
           envkey_PORT_COLLABORATION: 3004
           envkey_PORT_AI: 3005
-          envkey_PORT_CHAT: 3006
+          envkey_PORT_CHAT: 3006 
           envkey_GEMINI_API_KEY: ''
           envkey_DB_URI_QUESTION: ${{ env.DB_URI_QUESTION }}
           envkey_DB_URI_USER: ${{ env.DB_URI_USER }}
@@ -63,18 +63,27 @@ jobs:
       - name: Setup & run server
         run: |
             cd server
-            docker compose -f docker-compose.local.yml build
-            docker compose -f docker-compose.local.yml up -d
+            docker compose build
+            docker compose up -d
       - name: Setup & run client
         run: |
             cd client
             npm ci
             npm run start &
-            sleep 60
       - name: Run Tests
         uses: nick-fields/retry@v3
         with:
           timeout_seconds: 100
-          max_attempts: 5
+          max_attempts: 1
           retry_on: error
           command: xvfb-run --server-args="-screen 0 1024x768x24" npm run test
+      - name: Setup tmate session # UNCOMMENT TO BE ABLE TO SSH IN AND DEBUG
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 10
+      - name: Print user service logs
+        if: ${{ failure() }}
+        run: docker logs server-user-1
+      - name: Print question service logs
+        if: ${{ failure() }}
+        run: docker logs server-question-1
