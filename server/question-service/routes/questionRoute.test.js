@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/", questionRoute);
 
-afterEach(() => {
+beforeEach(() => {
   jest.clearAllMocks();
 });
 
@@ -32,6 +32,7 @@ describe("GET /", () => {
   it("should return all questions with status 200", async () => {
     Question.find.mockResolvedValue([sampleQuestion1]);
     const res = await request(app).get("/");
+    expect(Question.find).toHaveBeenCalledWith({});
     expect(res.status).toBe(200);
     expect(res.body).toEqual([sampleQuestion1]);
   });
@@ -39,24 +40,28 @@ describe("GET /", () => {
   it("should handle errors with status 500", async () => {
     Question.find.mockRejectedValue(new Error("Error"));
     const res = await request(app).get("/");
+    expect(Question.find).toHaveBeenCalledWith({});
     expect(res.status).toBe(500);
     expect(res.body.message).toBe("Error");
   });
 });
 
 describe("GET /:id", () => {
+  let someId = 123;
   it("should return question with the right ID with status 200", async () => {
     Question.findById.mockImplementation(async (id) =>
-      id == 123 ? sampleQuestion1 : sampleQuestion2
+      id == someId ? sampleQuestion1 : sampleQuestion2
     );
-    const res = await request(app).get("/123");
+    const res = await request(app).get("/" + someId);
+    expect(Question.findById).toHaveBeenCalledWith(someId.toString());
     expect(res.status).toEqual(200);
     expect(res.body).toEqual(sampleQuestion1);
   });
 
   it("should handle errors with status 500", async () => {
     Question.findById.mockRejectedValue(new Error("Error"));
-    const res = await request(app).get("/123");
+    const res = await request(app).get("/" + someId);
+    expect(Question.findById).toHaveBeenCalledWith(someId.toString());
     expect(res.status).toBe(500);
     expect(res.body.message).toBe("Error");
   });
@@ -67,6 +72,7 @@ describe("GET /categories/unique", () => {
     const uniqueCategories = ["A", "B"];
     Question.aggregate.mockResolvedValue(uniqueCategories);
     const res = await request(app).get("/categories/unique");
+    expect(Question.aggregate).toHaveBeenCalled()
     expect(res.status).toBe(200);
     expect(res.body).toEqual(uniqueCategories);
   });
@@ -79,28 +85,78 @@ describe("GET /categories/unique", () => {
   });
 });
 
+describe("GET /:topic/:complexity", () => {
+  it("should call with the correct regex", async () => {
+    let topic = "someTopic";
+    let complexity = "someComplexity";
+    Question.findOne.mockResolvedValue(sampleQuestion1);
+    const res = await request(app).get(`/${topic}/${complexity}`);
+    expect(Question.findOne).toHaveBeenCalledWith(
+      expect.objectContaining({
+        complexity: { $regex: new RegExp(`${complexity}`, "i") },
+        categories: { $regex: new RegExp(`(^|,)\\s*${topic}\\s*(,|$)`, "i") },
+      })
+    );
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(sampleQuestion1);
+  });
+});
+
 describe("GET /complexity/...", () => {
   const qns = [sampleQuestion1, sampleQuestion2];
 
-  test("get easy with status 200", async () => {
-    Question.find.mockResolvedValue(qns);
-    const res = await request(app).get("/complexity/easy");
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual(qns);
+  describe("GET /complexity/easy", () => {
+    it("should find easy with status 200", async () => {
+      Question.find.mockResolvedValue(qns);
+      const res = await request(app).get("/complexity/easy");
+      expect(Question.find).toHaveBeenCalledWith({ complexity: { $eq: "Easy" } });
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(qns);
+    });
+
+    it("should handle errors with status 500", async () => {
+      Question.find.mockRejectedValue(new Error("Error"));
+      const res = await request(app).get("/complexity/easy");
+      expect(Question.find).toHaveBeenCalledWith({ complexity: { $eq: "Easy" } });
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("Error");
+    });
   });
 
-  test("get medium with status 200", async () => {
-    Question.find.mockResolvedValue(qns);
-    const res = await request(app).get("/complexity/easy");
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual(qns);
+  describe("GET /complexity/medium", () => {
+    it("should find medium with status 200", async () => {
+      Question.find.mockResolvedValue(qns);
+      const res = await request(app).get("/complexity/medium");
+      expect(Question.find).toHaveBeenCalledWith({ complexity: { $eq: "Medium" } });
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(qns);
+    });
+
+    it("should handle errors with status 500", async () => {
+      Question.find.mockRejectedValue(new Error("Error"));
+      const res = await request(app).get("/complexity/medium");
+      expect(Question.find).toHaveBeenCalledWith({ complexity: { $eq: "Medium" } });
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("Error");
+    });
   });
 
-  test("get hard with status 200", async () => {
-    Question.find.mockResolvedValue(qns);
-    const res = await request(app).get("/complexity/easy");
-    expect(res.status).toBe(200);
-    expect(res.body).toEqual(qns);
+  describe("GET /complexity/hard", () => {
+    it("should find hard with status 200", async () => {
+      Question.find.mockResolvedValue(qns);
+      const res = await request(app).get("/complexity/Hard");
+      expect(Question.find).toHaveBeenCalledWith({ complexity: { $eq: "Hard" } });
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(qns);
+    });
+
+    it("should handle errors with status 500", async () => {
+      Question.find.mockRejectedValue(new Error("Error"));
+      const res = await request(app).get("/complexity/hard");
+      expect(Question.find).toHaveBeenCalledWith({ complexity: { $eq: "Hard" } });
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("Error");
+    });
   });
 });
 
@@ -116,6 +172,9 @@ describe("POST /add", () => {
       .send(sampleQuestion1)
       .set("Content-Type", "application/json")
       .set("Accept", "application/json");
+    expect(Question.findOne).toHaveBeenCalledWith({
+      title: sampleQuestion1.title,
+    });
     expect(res.status).toBe(200);
     expect(res.body).toEqual(sampleQuestion1);
   });
@@ -131,6 +190,9 @@ describe("POST /add", () => {
       .send(sampleQuestion1)
       .set("Content-Type", "application/json")
       .set("Accept", "application/json");
+    expect(Question.findOne).toHaveBeenCalledWith({
+      title: sampleQuestion1.title,
+    });
     expect(res.status).toBe(400);
     expect(res.text).toBe(`Question with the title "${sampleQuestion1.title}" already exists.`);
   });
@@ -146,11 +208,15 @@ describe("POST /add", () => {
       .send(sampleQuestion1)
       .set("Content-Type", "application/json")
       .set("Accept", "application/json, text/html");
+    expect(Question.findOne).toHaveBeenCalledWith({
+      title: sampleQuestion1.title,
+    });
     expect(res.status).toBe(500);
   });
 });
 
 describe("PUT /:id", () => {
+  const id = "123";
   const updatedQuestion = {
     title: "Updated Question",
     description: "",
@@ -161,44 +227,57 @@ describe("PUT /:id", () => {
 
   it("should update a question by ID with status 200", async () => {
     Question.findById.mockResolvedValue({ save: jest.fn().mockResolvedValue(updatedQuestion) });
-    const res = await request(app).put("/123").send(updatedQuestion);
+    const res = await request(app)
+      .put("/" + id)
+      .send(updatedQuestion);
+    expect(Question.findById).toHaveBeenCalledWith(id);
     expect(res.status).toBe(200);
     expect(res.body).toEqual(updatedQuestion);
   });
 
   it("should return 404 if question not found", async () => {
     Question.findById.mockResolvedValue(null);
-    const res = await request(app).put("/123").send(updatedQuestion);
+    const res = await request(app)
+      .put("/" + id)
+      .send(updatedQuestion);
+    expect(Question.findById).toHaveBeenCalledWith(id);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Question not found");
   });
 
   it("should handle errors with status 500", async () => {
     Question.findById.mockRejectedValue(new Error("Update error"));
-    const res = await request(app).put("/123").send(updatedQuestion);
+    const res = await request(app)
+      .put("/" + id)
+      .send(updatedQuestion);
+    expect(Question.findById).toHaveBeenCalledWith(id);
     expect(res.status).toBe(500);
     expect(res.body.message).toBe("Update error");
   });
 });
 
 describe("DELETE /:id", () => {
+  const id = "123";
   it("should delete a question by ID with status 200", async () => {
-    Question.findByIdAndDelete.mockResolvedValue({ _id: "123" });
-    const res = await request(app).delete("/123");
+    Question.findByIdAndDelete.mockResolvedValue({ _id: id });
+    const res = await request(app).delete("/" + id);
+    expect(Question.findByIdAndDelete).toHaveBeenCalledWith(id);
     expect(res.status).toBe(200);
     expect(res.body.message).toBe("Question deleted successfully");
   });
 
   it("should return 404 if question not found", async () => {
     Question.findByIdAndDelete.mockResolvedValue(null);
-    const res = await request(app).delete("/123");
+    const res = await request(app).delete("/" + id);
+    expect(Question.findByIdAndDelete).toHaveBeenCalledWith(id);
     expect(res.status).toBe(404);
     expect(res.body.message).toBe("Question not found");
   });
 
   it("should handle errors with status 500", async () => {
     Question.findByIdAndDelete.mockRejectedValue(new Error("Delete error"));
-    const res = await request(app).delete("/123");
+    const res = await request(app).delete("/" + id);
+    expect(Question.findByIdAndDelete).toHaveBeenCalledWith(id);
     expect(res.status).toBe(500);
     expect(res.body.message).toBe("Delete error");
   });
