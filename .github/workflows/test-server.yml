@@ -202,7 +202,7 @@ jobs:
           file_name: .env
           fail_on_empty: false
           sort_keys: false
-      - name: Install AI Service Dependencies
+      - name: Install Chat Service Dependencies
         run: npm ci
       - name: Run Tests
         run: npm run ci
