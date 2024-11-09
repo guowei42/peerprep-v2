@@ -72,7 +72,7 @@ describe("GET /categories/unique", () => {
     const uniqueCategories = ["A", "B"];
     Question.aggregate.mockResolvedValue(uniqueCategories);
     const res = await request(app).get("/categories/unique");
-    expect(Question.aggregate).toHaveBeenCalled()
+    expect(Question.aggregate).toHaveBeenCalled();
     expect(res.status).toBe(200);
     expect(res.body).toEqual(uniqueCategories);
   });
@@ -86,19 +86,47 @@ describe("GET /categories/unique", () => {
 });
 
 describe("GET /:topic/:complexity", () => {
+  let topic = "Algorithms";
+  let complexity = "Easy";
+  const topicRegex = new RegExp(`(^|,)\\s*${topic}\\s*(,|$)`, "i");
+  const complexityRegex = new RegExp(`${complexity}`, "i");
+
   it("should call with the correct regex", async () => {
-    let topic = "someTopic";
-    let complexity = "someComplexity";
     Question.findOne.mockResolvedValue(sampleQuestion1);
     const res = await request(app).get(`/${topic}/${complexity}`);
-    expect(Question.findOne).toHaveBeenCalledWith(
-      expect.objectContaining({
-        complexity: { $regex: new RegExp(`${complexity}`, "i") },
-        categories: { $regex: new RegExp(`(^|,)\\s*${topic}\\s*(,|$)`, "i") },
-      })
-    );
+    expect(Question.findOne).toHaveBeenCalledWith({
+      complexity: { $regex: complexityRegex },
+      categories: { $regex: topicRegex },
+    });
     expect(res.status).toBe(200);
     expect(res.body).toEqual(sampleQuestion1);
+  });
+
+  describe("regex tests", () => {
+    let otherTopic = "Strings";
+    let otherComplexity = "Hard";
+
+    it("should match single topic correctly", async () => {
+      expect(topicRegex.test(topic)).toBe(true);
+      expect(topicRegex.test(topic.toLowerCase())).toBe(true);
+      expect(topicRegex.test(topic.toUpperCase())).toBe(true);
+      expect(topicRegex.test(otherTopic)).toBe(false);
+    });
+
+    it("should match one of list of topics correctly", async () => {
+      expect(topicRegex.test(`${topic}, ${otherTopic}`)).toBe(true);
+      expect(topicRegex.test(`${otherTopic}, ${topic}`)).toBe(true);
+      expect(topicRegex.test(`${topic}, ${otherTopic}`.toLowerCase())).toBe(true);
+      expect(topicRegex.test(`${otherTopic}, ${topic}`.toUpperCase())).toBe(true);
+      expect(topicRegex.test(`${otherTopic}, Data Structures`)).toBe(false);
+    });
+
+    it("should match complexity correctly", async () => {
+      expect(complexityRegex.test(complexity)).toBe(true);
+      expect(complexityRegex.test(complexity.toLowerCase())).toBe(true);
+      expect(complexityRegex.test(complexity.toUpperCase())).toBe(true);
+      expect(complexityRegex.test(otherComplexity)).toBe(false);
+    });
   });
 });
 
