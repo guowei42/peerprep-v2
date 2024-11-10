@@ -60,7 +60,7 @@ jobs:
           --tag "${DOCKER_TAG_LATEST}" \
           --build-arg GITHUB_SHA="${GITHUB_SHA}" \
           --build-arg GITHUB_REF="${GITHUB_REF}" \
-          ./server/${SERVICE}
+          ./${SERVICE}
 
         docker push "${DOCKER_TAG}"
         docker push "${DOCKER_TAG_LATEST}"
