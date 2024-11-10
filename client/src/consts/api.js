@@ -17,7 +17,7 @@ export const SVC_PORTS = {
 
 // automatically generated from SVC_PORTS
 export const SVC_ENDPOINTS = Object.fromEntries(
-  process.env.REACT_APP_API_BASE_URL
+  (process.env.REACT_APP_API_BASE_URL && process.env.REACT_APP_API_BASE_URL!=="http://localhost")
     ? Object.entries(SVC_PORTS).map(([k, v], i) => [k, `${API_BASE_URL}`])
     : Object.entries(SVC_PORTS).map(([k, v], i) => [k, `${API_BASE_URL}:${v}`])
 );
