@@ -1,11 +1,11 @@
-name: Build and Deploy collab-service to GKE
+name: Build and Deploy chat-service to GKE
 
 on:
   push:
     branches:
       - main
     paths:
-      - server/collaboration-service/**
+      - server/chat-service/**
   workflow_dispatch:
 
 env:
@@ -13,8 +13,8 @@ env:
   GKE_CLUSTER: peerprep-cluster-1
   GKE_ZONE: asia-southeast1
   REPOSITORY_NAME: peerprep
-  SERVICE: collab-service
-  IMAGE: collaboration
+  SERVICE: chat-service
+  IMAGE: chat
 
 jobs:
   setup-build-publish-deploy:
