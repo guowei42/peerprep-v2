@@ -1,5 +1,5 @@
 const http = require("http");
-const { USERS_API_URL } = require("./const");
+const { USERS_API_URL, QUESTIONS_API_URL } = require("./const");
 
 const get = async (url) => {
   return new Promise((resolve) => {
@@ -17,4 +17,16 @@ const get = async (url) => {
 
 module.exports.deleteAllUsers = async () => {
   await get(USERS_API_URL + "/test/deleteAllUsers");
+};
+
+module.exports.deleteAllQuestions = async () => {
+  await get(QUESTIONS_API_URL + "/test/deleteAll");
+};
+
+module.exports.seedQuestions = async () => {
+  await get(QUESTIONS_API_URL + "/test/seed");
+};
+
+module.exports.resetQuestions = async () => {
+  await get(QUESTIONS_API_URL + "/test/reset");
 };

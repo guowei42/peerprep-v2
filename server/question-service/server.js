@@ -5,6 +5,7 @@ const app = express();
 const dotenv = require("dotenv");
 const Seed = require("./seedQuestions");
 const questionsRoutes = require("./routes/questionRoute");
+const testingRoutes = require("./routes/testingRoute");
 
 dotenv.config();
 app.use(cors());
@@ -34,3 +35,7 @@ if (process.env.DB_CLOUD_URI) {
 
 //routes
 app.use("/questions", questionsRoutes);
+
+if (process.env.ENV === "TEST") {
+    app.use("/test", testingRoutes);
+}
