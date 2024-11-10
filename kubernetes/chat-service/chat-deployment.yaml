@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-service
+  labels:
+    app: chat-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat-service
+  template:
+    metadata:
+      labels:
+        app: chat-service
+    spec:
+      containers:
+        - name: chat-service
+          image: asia-southeast1-docker.pkg.dev/peerprep-440702/peerprep/chat:latest
+          ports:
+            - name: chat-service
+              containerPort: 3006
+      restartPolicy: Always
+
+      
