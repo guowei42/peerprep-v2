@@ -74,13 +74,13 @@ jobs:
         uses: nick-fields/retry@v3
         with:
           timeout_seconds: 100
-          max_attempts: 1
+          max_attempts: 3
           retry_on: error
           command: xvfb-run --server-args="-screen 0 1024x768x24" npm run test
-      - name: Setup tmate session # UNCOMMENT TO BE ABLE TO SSH IN AND DEBUG
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 10
+      # - name: Setup tmate session # UNCOMMENT TO BE ABLE TO SSH IN AND DEBUG
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3
+      #   timeout-minutes: 10
       - name: Print user service logs
         if: ${{ failure() }}
         run: docker logs server-user-1
