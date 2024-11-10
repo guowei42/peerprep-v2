@@ -102,6 +102,13 @@ describe("GET /:topic/:complexity", () => {
     expect(res.body).toEqual(sampleQuestion1);
   });
 
+  it("should handle errors with status 500", async () => {
+    Question.findOne.mockRejectedValue(new Error("Error"));
+    const res = await request(app).get(`/${topic}/${complexity}`);
+    expect(res.status).toBe(500);
+    expect(res.body.message).toBe("Error");
+  });
+
   describe("regex tests", () => {
     let otherTopic = "Strings";
     let otherComplexity = "Hard";
