@@ -1,17 +1,8 @@
-let {
-  getWebDriver,
-  findTextInputWithLabel,
-  findButtonContainingText,
-  waitForUrl,
-} = require("./utils/driver");
-let { ROOT_URL, TEST_USER } = require("./utils/const");
+let { getWebDriver, findButtonContainingText, waitForUrl } = require("./utils/driver");
+let { URLS, TEST_USER_1 } = require("./utils/const");
 const { By, until } = require("selenium-webdriver");
 const { deleteAllUsers } = require("./utils/api");
-
-let driver;
-let url = ROOT_URL;
-let urlSignup = url + "/signup";
-let urlLogin = url + "/login";
+const { fillLoginForm, fillSignUpForm, signUpAndLogIn, logOut } = require("./utils/utils");
 
 /**
  * SIGN UP LOG IN TEST
@@ -24,6 +15,8 @@ let urlLogin = url + "/login";
  * - logging out
  */
 describe("Sign Up/Log In test", () => {
+  let driver;
+
   beforeAll(async () => {
     driver = await getWebDriver();
   });
@@ -38,38 +31,26 @@ describe("Sign Up/Log In test", () => {
 
   test("simulate successful user sign up and log in from home page", async () => {
     // go to home page
-    await driver.get(url);
+    await driver.get(URLS.root);
 
     // click log in
     let loginButton = await findButtonContainingText(driver, "Login");
     await loginButton.click();
-    await waitForUrl(driver, urlLogin);
+    await waitForUrl(driver, URLS.login);
 
     // click sign up
     let signupLink = await driver.findElement(By.linkText("here"));
     await signupLink.click();
-    await waitForUrl(driver, urlSignup);
+    await waitForUrl(driver, URLS.signup);
 
     // fill sign up form
-    let usernameField = await findTextInputWithLabel(driver, "Username");
-    let emailField = await findTextInputWithLabel(driver, "Email");
-    let passwordField = await findTextInputWithLabel(driver, "Password");
-    let submit = await findButtonContainingText(driver, "Signup");
-    await driver.actions().sendKeys(usernameField, TEST_USER.username).perform();
-    await driver.actions().sendKeys(emailField, TEST_USER.email).perform();
-    await driver.actions().sendKeys(passwordField, TEST_USER.password).perform();
-    await submit.click();
+    await fillSignUpForm(driver, TEST_USER_1);
 
     // check redirect to login
-    await waitForUrl(driver, urlLogin);
+    await waitForUrl(driver, URLS.login);
 
     // fill log in form
-    emailField = await findTextInputWithLabel(driver, "Email");
-    passwordField = await findTextInputWithLabel(driver, "Password");
-    submit = await findButtonContainingText(driver, "Login");
-    await driver.actions().sendKeys(emailField, TEST_USER.email).perform();
-    await driver.actions().sendKeys(passwordField, TEST_USER.password).perform();
-    await submit.click();
+    await fillLoginForm(driver, TEST_USER_1);
 
     // check redirect to root
     await driver.wait(until.elementLocated(By.xpath(`//button[contains(text(),'Logout')]`)), 3000);
@@ -79,6 +60,40 @@ describe("Sign Up/Log In test", () => {
     await logOutButton.click();
 
     // check redirect to login page
-    await waitForUrl(driver, urlLogin);
+    await waitForUrl(driver, URLS.login);
+  });
+
+  describe("tests with existing user", () => {
+    beforeEach(async () => {
+      await deleteAllUsers();
+      // create existing user
+      await signUpAndLogIn(driver, TEST_USER_1);
+      await logOut(driver, TEST_USER_1);
+    });
+
+    test("simulate unsuccessful user sign up", async () => {
+      const errorMsgXpath = `//div[contains(text(),'Duplicate username or email encountered!')]`;
+      await driver.get(URLS.signup);
+      await fillSignUpForm(driver, TEST_USER_1);
+      await driver.wait(until.elementLocated(By.xpath(errorMsgXpath)), 3000);
+    });
+
+    test("simulate unsuccessful user log in", async () => {
+      const errorMsgXpath = `//div[contains(text(),'Incorrect email or password!')]`;
+      
+      let wrongEmail = { ...TEST_USER_1 };
+      wrongEmail.email = "a" + wrongEmail.email;
+      let wrongPassword = { ...TEST_USER_1 };
+      wrongPassword.password = "a" + wrongPassword.password;
+
+      await driver.get(URLS.login);
+      await fillLoginForm(driver, wrongEmail);
+      await driver.wait(until.elementLocated(By.xpath(errorMsgXpath)), 3000);
+
+      await driver.get(URLS.root);
+      await driver.get(URLS.login);
+      await fillLoginForm(driver, wrongPassword);
+      await driver.wait(until.elementLocated(By.xpath(errorMsgXpath)), 3000);
+    });
   });
 });

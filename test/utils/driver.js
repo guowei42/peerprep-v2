@@ -22,3 +22,7 @@ module.exports.findButtonContainingText = async (driver, text) => {
 module.exports.waitForUrl = async (driver, url) => {
   await driver.wait(until.urlIs(url), 5000);
 };
+
+module.exports.click = async (elem) => {
+  await elem.click();
+};

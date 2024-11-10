@@ -1,9 +1,8 @@
 let { getWebDriver } = require("./utils/driver");
-let { ROOT_URL } = require("./utils/const");
+let { URLS } = require("./utils/const");
 const { By } = require("selenium-webdriver");
 
 let driver;
-let url = ROOT_URL;
 
 /**
  * Trivial test case. Mostly used to debug system testing.
@@ -14,7 +13,7 @@ describe("homepage contains 'PeerPrep' clickable link in toolbar", () => {
   });
 
   beforeEach(async () => {
-    await driver.get(url);
+    await driver.get(URLS.root);
   });
 
   afterAll(async () => {
@@ -25,6 +24,6 @@ describe("homepage contains 'PeerPrep' clickable link in toolbar", () => {
     let link = await driver.findElement(By.linkText("PeerPrep"));
     await link.click();
     let newUrl = await driver.getCurrentUrl();
-    expect(newUrl).toMatch(url);
+    expect(newUrl).toMatch(URLS.root);
   });
 });
