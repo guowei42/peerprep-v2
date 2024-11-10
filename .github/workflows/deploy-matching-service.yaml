@@ -13,7 +13,8 @@ env:
   GKE_CLUSTER: peerprep-cluster-1
   GKE_ZONE: asia-southeast1
   REPOSITORY_NAME: peerprep
-  SERVICE: match-service
+  K8_DIR: match-service
+  SERVICE: matching-service
   IMAGE: matching
 
 jobs:
@@ -68,6 +69,6 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        kubectl apply -f kubernetes/${SERVICE}
-        kubectl rollout status deployment/${SERVICE}
+        kubectl apply -f kubernetes/${K8_DIR}
+        kubectl rollout status deployment/${K8_DIR}
         kubectl get services -o wide
