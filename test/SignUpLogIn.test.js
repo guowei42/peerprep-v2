@@ -2,7 +2,7 @@ let { getWebDriver, findButtonContainingText, waitForUrl, click } = require("./u
 let { URLS, TEST_USER_1 } = require("./utils/const");
 const { By, until } = require("selenium-webdriver");
 const { deleteAllUsers } = require("./utils/api");
-const { fillLoginForm, fillSignUpForm, signUpAndLogIn, logOut } = require("./utils/utils");
+const { fillLoginForm, fillSignUpForm, signUp } = require("./utils/utils");
 
 /**
  * SIGN UP LOG IN TEST
@@ -64,8 +64,7 @@ describe("Sign Up/Log In test", () => {
     beforeEach(async () => {
       await deleteAllUsers();
       // create existing user
-      await signUpAndLogIn(driver, TEST_USER_1);
-      await logOut(driver, TEST_USER_1);
+      await signUp(driver, TEST_USER_1);
     });
 
     test("simulate unsuccessful user sign up", async () => {

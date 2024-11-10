@@ -24,18 +24,23 @@ const fillLoginForm = async (driver, user) => {
 };
 module.exports.fillLoginForm = fillLoginForm;
 
-module.exports.signUpAndLogIn = async (driver, user) => {
+const signUp = async (driver, user) => {
   await driver.get(URLS.signup);
   await fillSignUpForm(driver, user);
   await waitForUrl(driver, URLS.login);
-  await fillLoginForm(driver, user);
-  await driver.wait(until.elementLocated(By.xpath(`//button[contains(text(),'Logout')]`)), 3000);
 };
+module.exports.signUp = signUp;
 
-module.exports.logIn = async (driver, user) => {
+const logIn = async (driver, user) => {
   await driver.get(URLS.login);
   await fillLoginForm(driver, user);
   await driver.wait(until.elementLocated(By.xpath(`//button[contains(text(),'Logout')]`)), 3000);
+};
+module.exports.logIn = logIn;
+
+module.exports.signUpAndLogIn = async (driver, user) => {
+  await signUp(driver, user);
+  await logIn(driver, user);
 };
 
 module.exports.logOut = async (driver) => {
