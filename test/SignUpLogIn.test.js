@@ -1,4 +1,4 @@
-let { getWebDriver, findButtonContainingText, waitForUrl } = require("./utils/driver");
+let { getWebDriver, findButtonContainingText, waitForUrl, click } = require("./utils/driver");
 let { URLS, TEST_USER_1 } = require("./utils/const");
 const { By, until } = require("selenium-webdriver");
 const { deleteAllUsers } = require("./utils/api");
@@ -34,13 +34,11 @@ describe("Sign Up/Log In test", () => {
     await driver.get(URLS.root);
 
     // click log in
-    let loginButton = await findButtonContainingText(driver, "Login");
-    await loginButton.click();
+    await click(await findButtonContainingText(driver, "Login"));
     await waitForUrl(driver, URLS.login);
 
     // click sign up
-    let signupLink = await driver.findElement(By.linkText("here"));
-    await signupLink.click();
+    await click(await driver.findElement(By.linkText("here")));
     await waitForUrl(driver, URLS.signup);
 
     // fill sign up form
@@ -56,8 +54,7 @@ describe("Sign Up/Log In test", () => {
     await driver.wait(until.elementLocated(By.xpath(`//button[contains(text(),'Logout')]`)), 3000);
 
     // log out
-    let logOutButton = await findButtonContainingText(driver, "Logout");
-    await logOutButton.click();
+    await click(await findButtonContainingText(driver, "Logout"));
 
     // check redirect to login page
     await waitForUrl(driver, URLS.login);
@@ -80,7 +77,7 @@ describe("Sign Up/Log In test", () => {
 
     test("simulate unsuccessful user log in", async () => {
       const errorMsgXpath = `//div[contains(text(),'Incorrect email or password!')]`;
-      
+
       let wrongEmail = { ...TEST_USER_1 };
       wrongEmail.email = "a" + wrongEmail.email;
       let wrongPassword = { ...TEST_USER_1 };

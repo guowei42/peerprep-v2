@@ -8,21 +8,19 @@ const fillSignUpForm = async (driver, user) => {
   let usernameField = await findTextInputWithLabel(driver, "Username");
   let emailField = await findTextInputWithLabel(driver, "Email");
   let passwordField = await findTextInputWithLabel(driver, "Password");
-  let submit = await findButtonContainingText(driver, "Signup");
   await driver.actions().sendKeys(usernameField, user.username).perform();
   await driver.actions().sendKeys(emailField, user.email).perform();
   await driver.actions().sendKeys(passwordField, user.password).perform();
-  await submit.click();
+  await click(await findButtonContainingText(driver, "Signup"));
 };
 module.exports.fillSignUpForm = fillSignUpForm;
 
 const fillLoginForm = async (driver, user) => {
   let emailField = await findTextInputWithLabel(driver, "Email");
   let passwordField = await findTextInputWithLabel(driver, "Password");
-  let submit = await findButtonContainingText(driver, "Login");
   await driver.actions().sendKeys(emailField, user.email).perform();
   await driver.actions().sendKeys(passwordField, user.password).perform();
-  await submit.click();
+  await click(await findButtonContainingText(driver, "Login"));
 };
 module.exports.fillLoginForm = fillLoginForm;
 
