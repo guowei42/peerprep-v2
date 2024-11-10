@@ -139,10 +139,7 @@ function CollaborationPage() {
     if (initialCode) {
     setValue(initialCode);
     }
-    
-
-   
-
+  
     return () => {
       collaborationSocket.off("code_change");
       collaborationSocket.off("code_update");
