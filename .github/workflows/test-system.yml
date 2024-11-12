@@ -83,7 +83,19 @@ jobs:
       #   timeout-minutes: 10
       - name: Print user service logs
         if: ${{ failure() }}
-        run: docker logs server-user-1
+        run: docker logs server-user-service-1
       - name: Print question service logs
         if: ${{ failure() }}
-        run: docker logs server-question-1
+        run: docker logs server-qn-service-1
+      - name: Print collab service logs
+        if: ${{ failure() }}
+        run: docker logs server-collab-service-1
+      - name: Print matching service logs
+        if: ${{ failure() }}
+        run: docker logs server-match-service-1
+      - name: Print AI service logs
+        if: ${{ failure() }}
+        run: docker logs server-ai-service-1
+      - name: Print chat service logs
+        if: ${{ failure() }}
+        run: docker logs server-chat-service-1
