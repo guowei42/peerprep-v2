@@ -7,7 +7,16 @@ const Seed = require("./seedQuestions");
 const questionsRoutes = require("./routes/questionRoute");
 
 dotenv.config();
-app.use(cors());
+
+const corsOptions = {
+    origin: "*",
+    methods: "GET, POST, DELETE, PUT, PATCH",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie"
+}
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions))
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

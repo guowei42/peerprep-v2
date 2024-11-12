@@ -10,8 +10,10 @@ const redis_url = process.env.REDIS_URL;
 const server = http.createServer();
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000"
-  }
+    origin: "*",
+    methods: "GET, POST, DELETE, PUT, PATCH",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie"
+}
 });
 const redisClient = redis.createClient({
     url: redis_url
