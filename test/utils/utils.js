@@ -46,3 +46,40 @@ module.exports.signUpAndLogIn = async (driver, user) => {
 module.exports.logOut = async (driver) => {
   await driver.get(URLS.logout);
 };
+
+const selectMatchingOptions = async (driver, complexity, topic) => {
+  await click(await findButtonContainingText(driver, complexity));
+  await click(await findButtonContainingText(driver, "Next"));
+  await click(await findButtonContainingText(driver, topic));
+  await click(await findButtonContainingText(driver, "Next"));
+};
+module.exports.selectMatchingOptions = selectMatchingOptions;
+
+module.exports.startSession = async (driver1, driver2, complexity, topic) => {
+  await driver1.get(URLS.root);
+  await driver2.get(URLS.root);
+  await selectMatchingOptions(driver1, complexity, topic);
+  await selectMatchingOptions(driver2, complexity, topic);
+  await click(await findButtonContainingText(driver1, "Start"));
+  await click(await findButtonContainingText(driver2, "Start"));
+  await waitForUrl(driver1, URLS.collab);
+  await waitForUrl(driver2, URLS.collab);
+};
+
+const clearCollaborationCookies = async (driver) => {
+  await driver.manage().deleteCookie("roomId");
+  await driver.manage().deleteCookie("partnerId");
+  await driver.manage().deleteCookie("code");
+  await driver.manage().deleteCookie("question");
+};
+module.exports.clearCollaborationCookies = clearCollaborationCookies;
+
+const waitUntilMatchingTimeout = async (driver1, driver2) => {
+  await Promise.all([driver1.sleep(31 * 1000), driver2.sleep(31 * 1000)]);
+};
+module.exports.waitUntilMatchingTimeout = waitUntilMatchingTimeout;
+
+module.exports.resetCollabMatching = async (driver1, driver2) => {
+  await Promise.all([clearCollaborationCookies(driver1), clearCollaborationCookies(driver2)]);
+  await waitUntilMatchingTimeout(driver1, driver2);
+};

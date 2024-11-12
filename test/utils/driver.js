@@ -15,7 +15,9 @@ module.exports.findTextInputWithLabel = async (driver, label) => {
 };
 
 module.exports.findButtonContainingText = async (driver, text) => {
-  let button = await driver.findElement(By.xpath(`//button[contains(text(),'${text}')]`));
+  const by = By.xpath(`//button[contains(text(),'${text}')]`);
+  await driver.wait(until.elementLocated(by), 3000);
+  let button = await driver.findElement(by);
   return button;
 };
 
@@ -25,4 +27,8 @@ module.exports.waitForUrl = async (driver, url) => {
 
 module.exports.click = async (elem) => {
   await elem.click();
+};
+
+module.exports.fillTextInput = async (driver, field, text) => {
+  await driver.actions().sendKeys(field, text).perform();
 };

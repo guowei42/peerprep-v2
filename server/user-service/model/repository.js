@@ -71,5 +71,5 @@ export async function deleteUserById(userId) {
 }
 
 export async function deleteAllUsers_FOR_TESTING() {
-  return UserModel.deleteMany({});
+  return await UserModel.deleteMany({});
 }
