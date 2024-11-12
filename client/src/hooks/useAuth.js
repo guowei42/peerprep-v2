@@ -11,6 +11,7 @@ export const AuthContext = createContext({
   logout: () => {
     const cookies = new Cookies();
     cookies.remove("accessToken", { path: "/" });
+    cookies.remove("userId", { path: "/" });
   },
   isLoading: true,
 });
