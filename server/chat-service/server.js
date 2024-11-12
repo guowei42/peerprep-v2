@@ -6,8 +6,10 @@ const port = process.env.PORT || 3006; // Ensure this matches SVC_PORTS for chat
 const server = http.createServer();
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Adjust as needed for production
-  },
+    origin: "*",
+    methods: "GET, POST, DELETE, PUT, PATCH",
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie"
+}
 });
 
 io.on("connection", (socket) => {
