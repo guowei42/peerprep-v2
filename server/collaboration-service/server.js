@@ -6,7 +6,10 @@ const port = process.env.PORT || 3004;
 const server = http.createServer();
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
+    methods: "GET, POST, DELETE, PUT, PATCH",
+    allowedHeaders:
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie",
   },
 });
 
@@ -22,7 +25,7 @@ io.on("connection", (socket) => {
     console.log(`Code update in room ${roomName}: ${code}`);
     socket.to(roomName).emit("code_update", code);
   });
-  
+
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });
