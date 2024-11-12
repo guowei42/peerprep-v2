@@ -8,7 +8,7 @@ services:
     ports:
       - "80:80"
 
-  user:
+  user-service:
     build:
       context: ./user-service
       dockerfile: Dockerfile
@@ -24,7 +24,7 @@ services:
       - DB_LOCAL_URI=${DB_URI_USER}
       - JWT_SECRET
 
-  questions:
+  qn-service:
     build:
       context: ./question-service
       dockerfile: Dockerfile
@@ -38,7 +38,7 @@ services:
       - ENV
       - DB_CLOUD_URI=${DB_URI_QUESTION}
 
-  collaboration:
+  collab-service:
     build:
       context: ./collaboration-service
       dockerfile: Dockerfile
@@ -56,7 +56,7 @@ services:
     expose:
       - 6379
 
-  matching:
+  match-service:
     build:
       context: ./matching-service
       dockerfile: Dockerfile
@@ -71,7 +71,7 @@ services:
       - backend
     environment:
       - REDIS_URL=redis://matching-redis:6379
-  ai:
+  ai-service:
     build:
       context: ./ai-service
       dockerfile: Dockerfile
@@ -84,7 +84,7 @@ services:
     environment:
       - ENV
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-  chat:
+  chat-service:
     build: 
       context: ./chat-service
       dockerfile: Dockerfile
