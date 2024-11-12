@@ -4,18 +4,18 @@ const Question = require("../model/questionModel");
 const Seed = require("../seedQuestions");
 
 // Test question
-const testQuestion = new Question({
+const testQuestionData = {
   title: "Test Title",
   description: "Lorem ipsum lorem sit amet",
   categories: "TEST",
   complexity: "Easy",
   link: "http://localhost",
-});
+};
 
 // delete all questions
 router.get("/deleteAll", async (req, res) => {
   try {
-    Question.deleteMany({});
+    await Question.deleteMany({});
     res.status(200).json({ message: "Deleted all questions" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -25,8 +25,8 @@ router.get("/deleteAll", async (req, res) => {
 // seed questions
 router.get("/seed", async (req, res) => {
   try {
-    Seed.seedQuestions();
-    await testQuestion.save()
+    await Seed.seedQuestions();
+    await new Question(testQuestionData).save();
     res.status(200).json({ message: "Seeded default questions" });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -36,9 +36,9 @@ router.get("/seed", async (req, res) => {
 // delete + seed questions
 router.get("/reset", async (req, res) => {
   try {
-    Question.deleteMany({});
-    Seed.seedQuestions();
-    await testQuestion.save()
+    await Question.deleteMany({});
+    await Seed.seedQuestions();
+    await new Question(testQuestionData).save();
     res.status(200).json({ message: "Reset default questions" });
   } catch (error) {
     res.status(500).json({ message: error.message });
