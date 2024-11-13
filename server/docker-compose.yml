@@ -48,6 +48,8 @@ services:
       - backend
     ports:
       - ${PORT_COLLABORATION}:${PORT_COLLABORATION}
+    environment:
+      - ENV
 
   matching-redis:
     image: redis
@@ -70,6 +72,7 @@ services:
       - matching
       - backend
     environment:
+      - ENV
       - REDIS_URL=redis://matching-redis:6379
   ai-service:
     build:
@@ -94,6 +97,8 @@ services:
       - backend
     ports:
       - ${PORT_CHAT}:${PORT_CHAT}
+    environment:
+      - ENV
 
 networks:
   matching:
