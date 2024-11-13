@@ -32,6 +32,6 @@ module.exports.click = async (elem) => {
   await elem.click();
 };
 
-module.exports.fillTextInput = async (driver, field, text) => {
-  await driver.actions().sendKeys(field, text).perform();
+module.exports.sendKeysInto = async (driver, elem, text) => {
+  await driver.actions().sendKeys(elem, text).perform();
 };

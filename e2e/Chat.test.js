@@ -2,7 +2,7 @@ let {
   getWebDriver,
   findButtonContainingText,
   findTextInputWithLabel,
-  fillTextInput,
+  sendKeysInto,
   click,
   findElementWithWait,
 } = require("./utils/driver");
@@ -33,7 +33,7 @@ describe("Chat tests", () => {
     let chatTextBoxLabel = "Type your message";
     let msg = "hello from 1 :)";
     let chatInput1 = await findTextInputWithLabel(driver1, chatTextBoxLabel);
-    await fillTextInput(driver1, chatInput1, msg);
+    await sendKeysInto(driver1, chatInput1, msg);
     await click(await findButtonContainingText(driver1, "Send"));
     await findElementWithWait(driver1, By.xpath(`//p[normalize-space()='You: ${msg}']`));
     await findElementWithWait(driver2, By.xpath(`//p[normalize-space()='Partner: ${msg}']`));
