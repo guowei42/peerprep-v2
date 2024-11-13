@@ -3,6 +3,7 @@ import cors from "cors";
 
 import userRoutes from "./routes/user-routes.js";
 import authRoutes from "./routes/auth-routes.js";
+import testRoutes from "./routes/routes-for-testing.js";
 
 const app = express();
 
@@ -32,6 +33,10 @@ app.use((req, res, next) => {
 
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
+
+if (process.env.ENV === "TEST") {
+  app.use("/test", testRoutes);
+}
 
 app.get("/", (req, res, next) => {
   console.log("Sending Greetings!");

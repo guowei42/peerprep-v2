@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const UserModelSchema = new Schema({
+export const UserModelSchema = new Schema({
   username: {
     type: String,
     required: true,

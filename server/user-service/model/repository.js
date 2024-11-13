@@ -69,3 +69,7 @@ export async function updateUserPrivilegeById(userId, isAdmin) {
 export async function deleteUserById(userId) {
   return UserModel.findByIdAndDelete(userId);
 }
+
+export async function deleteAllUsers_FOR_TESTING() {
+  return await UserModel.deleteMany({});
+}
