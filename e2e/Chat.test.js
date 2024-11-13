@@ -5,7 +5,7 @@ let {
   fillTextInput,
   click,
 } = require("./utils/driver");
-let { TEST_QUESTION, TIMEOUT_MATCHING_TESTS } = require("./utils/const");
+let { TEST_QUESTION } = require("./utils/const");
 const { By, until } = require("selenium-webdriver");
 const { startSession, setupMatchingTests, resetServer } = require("./utils/utils");
 
@@ -26,7 +26,7 @@ describe("Chat tests", () => {
   beforeEach(async () => {
     await setupMatchingTests(driver1, driver2);
     await startSession(driver1, driver2, TEST_QUESTION.complexity, TEST_QUESTION.categories);
-  }, TIMEOUT_MATCHING_TESTS);
+  });
 
   test("chat message should show correctly for both sender and partner", async () => {
     let chatTextBoxLabel = "Type your message";
