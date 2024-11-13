@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: collab-service
   annotations:
-    cloud.google.com/backend-config: '{"default": "collab-service-backendconfig"}'
+    cloud.google.com/backend-config: '{"ports": {"3004":"collab-service-backendconfig"}}'
   labels:
     app: collab-service
 spec:
@@ -14,3 +14,5 @@ spec:
     - name: collab-service
       port: 3004
       targetPort: 3004
+
+      
