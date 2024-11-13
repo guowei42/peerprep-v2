@@ -31,9 +31,15 @@ io.on("connection", (socket) => {
   socket.on("disconnect", (reason, details) => {
     console.log("Client disconnected");
     console.log("Reason", reason);
-    console.log("Message", details.message);
-    console.log("Description", details.description);
-    console.log("Context", details.context);
+    if (details && details.message) {
+      console.log("Message", details.message);
+    }
+    if (details && details.description) {
+      console.log("Description", details.description);
+    }
+    if (details && details.context) {
+      console.log("Context", details.context);
+    }
   });
 });
 
