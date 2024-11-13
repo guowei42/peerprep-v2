@@ -32,8 +32,8 @@ describe("Collaboration tests", () => {
 
   describe("question shown should be the same", () => {
     test("question shown should be the same", async () => {
-      await findElementWithWait(driver1, By.xpath(titleXpath));
-      await findElementWithWait(driver2, By.xpath(titleXpath));
+      await expect(findElementWithWait(driver1, By.xpath(titleXpath))).resolves.not.toThrow();
+      await expect(findElementWithWait(driver2, By.xpath(titleXpath))).resolves.not.toThrow();
     });
   });
 
@@ -44,8 +44,8 @@ describe("Collaboration tests", () => {
       const editorXpathWithCode = `${editorXpath}[normalize-space()='${code}']`;
       let editor1 = await findElementWithWait(driver1, By.xpath(editorXpath));
       await sendKeysInto(driver1, editor1, code);
-      await findElementWithWait(driver1, By.xpath(editorXpathWithCode));
-      await findElementWithWait(driver2, By.xpath(editorXpathWithCode));
+      await expect(findElementWithWait(driver1, By.xpath(editorXpathWithCode))).resolves.not.toThrow();
+      await expect(findElementWithWait(driver2, By.xpath(editorXpathWithCode))).resolves.not.toThrow();
     });
   });
 
@@ -54,26 +54,27 @@ describe("Collaboration tests", () => {
       await logOut(driver1);
       await waitForUrl(driver1, URLS.login);
 
-      expect(await driver1.getCurrentUrl()).toEqual(URLS.login);
-      expect(await driver2.getCurrentUrl()).toEqual(URLS.collab);
+      await expect(driver1.getCurrentUrl()).resolves.toEqual(URLS.login);
+      await expect(driver2.getCurrentUrl()).resolves.toEqual(URLS.collab);
     });
   });
 
   describe("if one user disconnects, other user remains in session", () => {
     test("if one user disconnects, other user remains in session", async () => {
       await driver1.get(URLS.root);
-      expect(await driver1.getCurrentUrl()).toEqual(URLS.root);
-      expect(await driver2.getCurrentUrl()).toEqual(URLS.collab);
+      await expect(driver1.getCurrentUrl()).resolves.toEqual(URLS.root);
+      await expect(driver2.getCurrentUrl()).resolves.toEqual(URLS.collab);
     });
   });
 
   describe("if one user disconnects, can rejoin", () => {
     test("if one user disconnects, can rejoin", async () => {
       await driver1.get(URLS.root);
+      await waitForUrl(driver1, URLS.root);
       await driver1.get(URLS.collab);
-      expect(await driver1.getCurrentUrl()).toEqual(URLS.collab);
-      expect(async () => await findElementWithWait(driver1, By.xpath(titleXpath))).not.toThrow();
-      expect(await driver2.getCurrentUrl()).toEqual(URLS.collab);
+      await expect(driver1.getCurrentUrl()).resolves.toEqual(URLS.collab);
+      await expect(findElementWithWait(driver1, By.xpath(titleXpath))).resolves.not.toThrow();
+      await expect(driver2.getCurrentUrl()).resolves.toEqual(URLS.collab);
     });
   });
 
@@ -82,9 +83,10 @@ describe("Collaboration tests", () => {
       await click(await findButtonContainingText(driver1, "END SESSION"));
       await waitForUrl(driver1, URLS.root);
       await driver1.get(URLS.collab);
+      await waitForUrl(driver1, URLS.collab);
 
-      await expect(async () => await findElementWithWait(driver1, By.xpath(titleXpath))).rejects.toThrow();
-      expect(async () => await findElementWithWait(driver2, By.xpath(titleXpath))).not.toThrow();
+      await expect(findElementWithWait(driver1, By.xpath(titleXpath))).rejects.toThrow();
+      await expect(findElementWithWait(driver2, By.xpath(titleXpath))).resolves.not.toThrow();
     });
   });
 });
