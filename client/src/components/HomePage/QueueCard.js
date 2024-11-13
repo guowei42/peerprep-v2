@@ -14,6 +14,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -85,14 +86,10 @@ function QueueCard() {
   const getCategories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${SVC_ENDPOINTS.question}/questions/categories/unique`
-      );
+      const response = await axios.get(`${SVC_ENDPOINTS.question}/questions/categories/unique`);
       if (response.status === 200) {
         console.log(response.data.map((x) => x.category));
-        setQuestionCategories(
-          Array.from(response.data.map((x) => x.category)).sort()
-        );
+        setQuestionCategories(Array.from(response.data.map((x) => x.category)).sort());
       }
     } catch (error) {
       console.log(error);
@@ -111,9 +108,7 @@ function QueueCard() {
 
     clearInterval(timer);
     const timerId = setInterval(() => {
-      setProgress((prevProgress) =>
-        prevProgress <= 0 ? 0 : Math.max(0, prevProgress - 10 / 3)
-      );
+      setProgress((prevProgress) => (prevProgress <= 0 ? 0 : Math.max(0, prevProgress - 10 / 3)));
     }, 1000);
     setTimer(timerId);
     const cookies = new Cookies();
@@ -172,118 +167,78 @@ function QueueCard() {
   }, [activeStep, questionCategories]);
 
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        flex: "1 1 auto",
-        maxWidth: "30vw",
-        height: "30vh",
-        borderRadius: "16px",
-      }}
-    >
-      <CardContent>
-        <Stepper activeStep={activeStep}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </CardContent>
-      <Divider />
-      <CardContent sx={{ flex: "1 1 auto" }}>
-        {activeStep === 0 && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center", // Centers horizontally
-              alignItems: "center", // Centers vertically
-              height: "100%", // Ensures full height for vertical centering
-            }}
-          >
-            <ToggleButtonGroup
-              value={difficulty}
-              onChange={handleDifficultyChange}
-              exclusive
+    <Grid
+        size={{ xs: 12, s: 10, sm: 8, md: 6, lg: 4 }}>
+      <Card
+        variant="outlined"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          flex: "1 1 auto",
+          borderRadius: "16px",
+        }}
+      >
+        <CardContent>
+          <Stepper activeStep={activeStep}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        </CardContent>
+        <Divider />
+        <CardContent sx={{ flex: "1 1 auto" }}>
+          {activeStep === 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center", // Centers horizontally
+                alignItems: "center", // Centers vertically
+                height: "100%", // Ensures full height for vertical centering
+              }}
             >
-              <ToggleButton
-                value={DIFFICULTY.easy}
-                aria-label={DIFFICULTY.easy}
-              >
-                Easy
-              </ToggleButton>
-              <ToggleButton
-                value={DIFFICULTY.medium}
-                aria-label={DIFFICULTY.medium}
-              >
-                Medium
-              </ToggleButton>
-              <ToggleButton
-                value={DIFFICULTY.hard}
-                aria-label={DIFFICULTY.hard}
-              >
-                Hard
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
-        )}
-        {activeStep === 1 && (
-          <Box>
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              <CustomToggleGroup
-                value={topic}
-                onChange={handleTopicChange}
-                exclusive
-              >
-                {questionCategories.map((category, index) => {
-                  return (
-                    <ToggleButton key={`cat${index}`} value={category}>
-                      {category}
-                    </ToggleButton>
-                  );
-                })}
-              </CustomToggleGroup>
-            )}
-          </Box>
-        )}
-        {activeStep === 2 && (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            {queueLoading && (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "100%",
-                }}
-              >
-                <Typography variant="h4">Finding You A Match! :D</Typography>
-                <Divider />
-                <CircularWithValueLabel value={progress} />
-                <Divider />
-                <Button color="error" variant="contained" onClick={handleEnd}>
-                  Cancel
-                </Button>
-              </Box>
-            )}
-            {!queueLoading && queueState.status === "timeout" && (
-              <Typography variant="h4">No Match Found! D:</Typography>
-            )}
-            {queueLoading ||
-              (collaborationSocket.connected && (
+              <ToggleButtonGroup value={difficulty} onChange={handleDifficultyChange} exclusive>
+                <ToggleButton value={DIFFICULTY.easy} aria-label={DIFFICULTY.easy}>
+                  Easy
+                </ToggleButton>
+                <ToggleButton value={DIFFICULTY.medium} aria-label={DIFFICULTY.medium}>
+                  Medium
+                </ToggleButton>
+                <ToggleButton value={DIFFICULTY.hard} aria-label={DIFFICULTY.hard}>
+                  Hard
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          )}
+          {activeStep === 1 && (
+            <Box>
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <CustomToggleGroup value={topic} onChange={handleTopicChange} exclusive>
+                  {questionCategories.map((category, index) => {
+                    return (
+                      <ToggleButton key={`cat${index}`} value={category}>
+                        {category}
+                      </ToggleButton>
+                    );
+                  })}
+                </CustomToggleGroup>
+              )}
+            </Box>
+          )}
+          {activeStep === 2 && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              {queueLoading && (
                 <Box
                   sx={{
                     display: "flex",
@@ -293,44 +248,61 @@ function QueueCard() {
                     height: "100%",
                   }}
                 >
-                  <BlurredButton variant="contained">Start</BlurredButton>
-                  <p>Please end all ongoing session before matching again!</p>
-                </Box>
-              ))}
-            {!queueLoading &&
-              queueState.status === "timeout" &&
-              !collaborationSocket.connected && (
-                <Button variant="contained" onClick={handleStartQueue}>
-                  Retry
-                </Button>
-              )}
-            {!queueLoading &&
-              queueState.status !== "timeout" &&
-              !collaborationSocket.connected && (
-                <div>
-                  <Button variant="contained" onClick={handleStartQueue}>
-                    Start
+                  <Typography variant="h4">Finding You A Match! :D</Typography>
+                  <Divider />
+                  <CircularWithValueLabel value={progress} />
+                  <Divider />
+                  <Button color="error" variant="contained" onClick={handleEnd}>
+                    Cancel
                   </Button>
-                </div>
+                </Box>
               )}
-          </Box>
-        )}
-        {error && <Typography color="error">{error}</Typography>}
-      </CardContent>
-      <CardActions sx={{ justifyContent: "space-between" }}>
-        <Button
-          color="inherit"
-          disabled={activeStep === 0}
-          onClick={handleBack}
-          sx={{ mr: 1 }}
-        >
-          Back
-        </Button>
-        {activeStep < steps.length - 1 && (
-          <Button onClick={handleNext}>Next</Button>
-        )}
-      </CardActions>
-    </Card>
+              {!queueLoading && queueState.status === "timeout" && (
+                <Typography variant="h4">No Match Found! D:</Typography>
+              )}
+              {queueLoading ||
+                (collaborationSocket.connected && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100%",
+                    }}
+                  >
+                    <BlurredButton variant="contained">Start</BlurredButton>
+                    <p>Please end all ongoing session before matching again!</p>
+                  </Box>
+                ))}
+              {!queueLoading &&
+                queueState.status === "timeout" &&
+                !collaborationSocket.connected && (
+                  <Button variant="contained" onClick={handleStartQueue}>
+                    Retry
+                  </Button>
+                )}
+              {!queueLoading &&
+                queueState.status !== "timeout" &&
+                !collaborationSocket.connected && (
+                  <div>
+                    <Button variant="contained" onClick={handleStartQueue}>
+                      Start
+                    </Button>
+                  </div>
+                )}
+            </Box>
+          )}
+          {error && <Typography color="error">{error}</Typography>}
+        </CardContent>
+        <CardActions sx={{ justifyContent: "space-between" }}>
+          <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+            Back
+          </Button>
+          {activeStep < steps.length - 1 && <Button onClick={handleNext}>Next</Button>}
+        </CardActions>
+      </Card>
+    </Grid>
   );
 }
 

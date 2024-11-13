@@ -21,7 +21,7 @@ export default function BasicCard({
   return (
     <Card
       sx={{
-        minWidth: 275,
+        minWidth: 300,
         flex: "1 1 auto",
         display: "flex",
         flexDirection: "column",
