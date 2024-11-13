@@ -122,6 +122,7 @@ const fillQuestionForm = async (driver, qn) => {
   await click(complexitySelect);
   await click(await findDropDownOption(driver, "complexity-select-label", qn.complexity));
   await driver.actions().sendKeys(Key.ESCAPE).perform();
+  await driver.sleep(100);
 };
 
 module.exports.fillAddQuestionForm = async (driver, qn) => {
