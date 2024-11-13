@@ -1,4 +1,4 @@
-const { By, until, Key } = require("selenium-webdriver");
+const { By, until } = require("selenium-webdriver");
 let {
   findTextInputWithLabel,
   findButtonContainingText,
@@ -7,7 +7,6 @@ let {
   findDropDownWithLabel,
   findDropDownOption,
   findTextAreaWithLabel,
-  cmdCtrl,
   clearTextFrom,
 } = require("./driver");
 let { URLS } = require("./const");
