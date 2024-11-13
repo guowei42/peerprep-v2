@@ -5,11 +5,14 @@ const port = process.env.PORT || 3006; // Ensure this matches SVC_PORTS for chat
 
 const server = http.createServer();
 const io = new Server(server, {
+  path: "/chat",
   cors: {
-    origin: "*",
+    origin: ["http://localhost:3000", "https://peerprep-nine.vercel.app"],
     methods: "GET, POST, DELETE, PUT, PATCH",
-    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie"
-}
+    allowedHeaders:
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie",
+    credentials: true,
+  },
 });
 
 io.on("connection", (socket) => {
@@ -27,7 +30,7 @@ io.on("connection", (socket) => {
     const roomName = `${roomId}`;
     console.log(`Message in room ${roomName}: ${message}`);
     // Broadcast message to all users in the room
-    io.to(roomName).emit("receive_message", {senderId, message});
+    io.to(roomName).emit("receive_message", { senderId, message });
   });
 
   // Handle disconnection

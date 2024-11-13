@@ -5,11 +5,13 @@ const port = process.env.PORT || 3004;
 
 const server = http.createServer();
 const io = new Server(server, {
+  path: "/collaboration",
   cors: {
-    origin: "*",
+    origin: ["http://localhost:3000", "https://peerprep-nine.vercel.app"],
     methods: "GET, POST, DELETE, PUT, PATCH",
     allowedHeaders:
       "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie",
+    credentials: true
   },
 });
 

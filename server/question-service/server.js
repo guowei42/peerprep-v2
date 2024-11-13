@@ -10,9 +10,10 @@ const testingRoutes = require("./routes/testingRoute");
 dotenv.config();
 
 const corsOptions = {
-    origin: "*",
+    origin: ["http://localhost:3000", "https://peerprep-nine.vercel.app"],
     methods: "GET, POST, DELETE, PUT, PATCH",
-    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie"
+    allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie",
+    credentials: true
 }
 
 app.use(cors(corsOptions));
