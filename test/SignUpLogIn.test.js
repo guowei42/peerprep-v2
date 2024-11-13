@@ -1,8 +1,9 @@
 let { getWebDriver, findButtonContainingText, waitForUrl, click } = require("./utils/driver");
-let { URLS, TEST_USER_1 } = require("./utils/const");
+let { URLS } = require("./utils/const");
 const { By, until } = require("selenium-webdriver");
-const { deleteAllUsers } = require("./utils/api");
-const { fillLoginForm, fillSignUpForm, signUp } = require("./utils/utils");
+const { deleteAllUsers } = require("./utils/server");
+const { fillLoginForm, fillSignUpForm, signUp, resetServer } = require("./utils/utils");
+const { getNewTestUser } = require("./utils/users");
 
 /**
  * SIGN UP LOG IN TEST
@@ -16,9 +17,11 @@ const { fillLoginForm, fillSignUpForm, signUp } = require("./utils/utils");
  */
 describe("Sign Up/Log In test", () => {
   let driver;
+  const TEST_USER_1 = getNewTestUser();
 
   beforeAll(async () => {
     driver = await getWebDriver();
+    await resetServer();
   });
 
   afterAll(async () => {

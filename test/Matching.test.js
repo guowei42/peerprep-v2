@@ -1,23 +1,19 @@
 let { getWebDriver, findButtonContainingText, waitForUrl, click } = require("./utils/driver");
-let { TEST_USER_1, TEST_USER_2, URLS, TEST_QUESTION } = require("./utils/const");
-const { deleteAllUsers, resetQuestions } = require("./utils/api");
+let { URLS, TEST_QUESTION } = require("./utils/const");
 const {
-  signUpAndLogIn,
   selectMatchingOptions,
   waitUntilMatchingTimeout,
-  resetCollabMatching,
+  setupMatchingTests,
+  resetServer,
 } = require("./utils/utils");
 
-let driver1, driver2;
-
 describe("Matching tests", () => {
+  let driver1, driver2;
+
   beforeAll(async () => {
     driver1 = await getWebDriver();
     driver2 = await getWebDriver();
-    await resetQuestions();
-    await deleteAllUsers();
-    await signUpAndLogIn(driver1, TEST_USER_1);
-    await signUpAndLogIn(driver2, TEST_USER_2);
+    await resetServer();
   });
 
   afterAll(async () => {
@@ -26,12 +22,8 @@ describe("Matching tests", () => {
   });
 
   beforeEach(async () => {
-    await driver1.get(URLS.root);
-    await driver2.get(URLS.root);
-    await resetCollabMatching(driver1, driver2);
-  }, 35 * 1000);
-
-  afterEach(async () => {});
+    await setupMatchingTests(driver1, driver2);
+  });
 
   describe("match found", () => {
     test("match found", async () => {
@@ -54,6 +46,7 @@ describe("Matching tests", () => {
       await selectMatchingOptions(driver1, TEST_QUESTION.complexity, TEST_QUESTION.categories);
       await selectMatchingOptions(driver2, TEST_QUESTION.complexity, TEST_QUESTION.categories);
       await click(await findButtonContainingText(driver1, "Start"));
+      await driver1.sleep(100);
       await click(await findButtonContainingText(driver1, "Cancel"));
       await driver2.sleep(500);
       await click(await findButtonContainingText(driver2, "Start"));

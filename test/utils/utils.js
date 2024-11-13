@@ -1,6 +1,8 @@
 const { By, until } = require("selenium-webdriver");
 let { findTextInputWithLabel, findButtonContainingText, waitForUrl, click } = require("./driver");
 let { URLS } = require("./const");
+const { deleteAllUsers, resetQuestions, clearMatchQueue } = require("./server");
+const { getNewTestUser } = require("./users");
 
 // general utility methods for common tasks
 
@@ -38,14 +40,16 @@ const logIn = async (driver, user) => {
 };
 module.exports.logIn = logIn;
 
-module.exports.signUpAndLogIn = async (driver, user) => {
+const signUpAndLogIn = async (driver, user) => {
   await signUp(driver, user);
   await logIn(driver, user);
 };
+module.exports.signUpAndLogIn = signUpAndLogIn;
 
-module.exports.logOut = async (driver) => {
+const logOut = async (driver) => {
   await driver.get(URLS.logout);
 };
+module.exports.logOut = logOut;
 
 const selectMatchingOptions = async (driver, complexity, topic) => {
   await click(await findButtonContainingText(driver, complexity));
@@ -66,20 +70,30 @@ module.exports.startSession = async (driver1, driver2, complexity, topic) => {
   await waitForUrl(driver2, URLS.collab);
 };
 
-const clearCollaborationCookies = async (driver) => {
-  await driver.manage().deleteCookie("roomId");
-  await driver.manage().deleteCookie("partnerId");
-  await driver.manage().deleteCookie("code");
-  await driver.manage().deleteCookie("question");
-};
-module.exports.clearCollaborationCookies = clearCollaborationCookies;
-
 const waitUntilMatchingTimeout = async (driver1, driver2) => {
-  await Promise.all([driver1.sleep(31 * 1000), driver2.sleep(31 * 1000)]);
+  const waitSeconds = 32;
+  await Promise.all([driver1.sleep(waitSeconds * 1000), driver2.sleep(waitSeconds * 1000)]);
 };
 module.exports.waitUntilMatchingTimeout = waitUntilMatchingTimeout;
 
-module.exports.resetCollabMatching = async (driver1, driver2) => {
-  await Promise.all([clearCollaborationCookies(driver1), clearCollaborationCookies(driver2)]);
-  await waitUntilMatchingTimeout(driver1, driver2);
+module.exports.setupMatchingTests = async (driver1, driver2) => {
+  let user1 = getNewTestUser();
+  let user2 = getNewTestUser();
+  await Promise.all([
+    logOut(driver1),
+    logOut(driver2),
+    deleteAllUsers(),
+    driver1.manage().deleteAllCookies(),
+    driver2.manage().deleteAllCookies(),
+  ]);
+  await Promise.all([
+    resetQuestions(),
+    clearMatchQueue(),
+    signUpAndLogIn(driver1, user1),
+    signUpAndLogIn(driver2, user2),
+  ]);
+  await Promise.all([driver1.get(URLS.root), driver2.get(URLS.root)]);
 };
+
+module.exports.resetServer = () =>
+  Promise.allSettled([deleteAllUsers(), resetQuestions(), clearMatchQueue()]);

@@ -1,5 +1,6 @@
 module.exports.USERS_API_URL = "http://localhost:3001";
 module.exports.QUESTIONS_API_URL = "http://localhost:3002";
+module.exports.MATCHING_ENDPOINT = "http://localhost:3003";
 
 const ROOT_URL = "http://localhost:3000";
 
@@ -10,20 +11,6 @@ module.exports.URLS = {
   logout: ROOT_URL + "/logout",
   collab: ROOT_URL + "/collaborationpage",
   questions: ROOT_URL + "/questionpage",
-};
-
-module.exports.TIMEOUT = 30 * 1000;
-
-module.exports.TEST_USER_1 = {
-  username: "testuser1",
-  email: "testuser1@example.com",
-  password: "testPassword1",
-};
-
-module.exports.TEST_USER_2 = {
-  username: "testuser2",
-  email: "testuser2@example.com",
-  password: "testPassword2",
 };
 
 module.exports.TEST_QUESTION = {

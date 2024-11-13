@@ -1,7 +1,6 @@
 const { Server } = require("socket.io");
 const redis = require("redis");
 const http = require("http");
-const { clear } = require("console");
 const { randomUUID } = require("crypto");
 
 const port = process.env.PORT || 3003;
@@ -67,7 +66,13 @@ io.on("connection", (socket) => {
     socket.on("disconnect", async () => {
         const { userId, topic, difficulty } = socket;
         await removeUser(userId, topic, difficulty);
+        socket.removeAllListeners();
         console.log(`Client disconnected: ${socket.id}`);
+    });
+
+    socket.on("clearQueue", async () => {
+        let msg = await clearQueue_FOR_TESTING();
+        socket.emit("clearedQueue", msg);
     });
 });
 
@@ -107,6 +112,16 @@ async function findMatch(userId, topic, difficulty) {
     }
 
     return null;
+}
+
+async function clearQueue_FOR_TESTING() {
+    if (process.env.ENV === "TEST") {
+        console.log("Clearing queue");
+        await redisClient.flushDb("SYNC", () => {});
+        return "Queue cleared!";
+    } else {
+        return "Not in test environment; did not clear";
+    }
 }
 
 // Start WebSocket server

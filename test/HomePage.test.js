@@ -1,6 +1,7 @@
 let { getWebDriver } = require("./utils/driver");
 let { URLS } = require("./utils/const");
 const { By } = require("selenium-webdriver");
+const { resetServer } = require("./utils/utils");
 
 let driver;
 
@@ -10,6 +11,7 @@ let driver;
 describe("homepage contains 'PeerPrep' clickable link in toolbar", () => {
   beforeAll(async () => {
     driver = await getWebDriver();
+    await resetServer();
   });
 
   beforeEach(async () => {
