@@ -5,29 +5,34 @@ const isProduction =
   process.env.REACT_APP_API_BASE_URL &&
   process.env.REACT_APP_API_BASE_URL !== "http://localhost";
 
+let settings = {
+  autoConnect: false,
+  reconnectionAttempts: 5,
+};
+
 export const matchingSocket = isProduction
   ? io(process.env.REACT_APP_API_BASE_URL, {
       path: "/matching",
-      autoConnect: false,
+      ...settings,
     })
   : io(SVC_ENDPOINTS.matching, {
-      autoConnect: false,
+      ...settings,
     });
 
 export const collaborationSocket = isProduction
   ? io(process.env.REACT_APP_API_BASE_URL, {
       path: "/collaboration",
-      autoConnect: false,
+      ...settings,
     })
   : io(SVC_ENDPOINTS.collaboration, {
-      autoConnect: false,
+      ...settings,
     });
 
 export const chatSocket = isProduction
   ? io(process.env.REACT_APP_API_BASE_URL, {
       path: "/chat",
-      autoConnect: false,
+      ...settings,
     })
   : io(SVC_ENDPOINTS.chat, {
-      autoConnect: false,
+      ...settings,
     });
