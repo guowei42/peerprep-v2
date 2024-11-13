@@ -13,6 +13,8 @@ const io = new Server(server, {
       "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie",
     credentials: true,
   },
+  pingTimeout: 300000,
+  pingInterval: 100000
 });
 
 io.on("connection", (socket) => {
