@@ -7,18 +7,21 @@ module.exports.getWebDriver = async () => {
   return driver;
 };
 
+const findElementWithWait = async (driver, by) => {
+  await driver.wait(until.elementLocated(by), 3000);
+  let elem = await driver.findElement(by);
+  return elem;
+};
+module.exports.findElementWithWait = findElementWithWait;
+
 module.exports.findTextInputWithLabel = async (driver, label) => {
-  let input = await driver.findElement(
-    By.xpath(`//label[text()='${label}']/ancestor-or-self::div/div/input`)
-  );
-  return input;
+  const by = By.xpath(`//label[text()='${label}']/ancestor-or-self::div/div/input`);
+  return findElementWithWait(driver, by);
 };
 
 module.exports.findButtonContainingText = async (driver, text) => {
   const by = By.xpath(`//button[contains(text(),'${text}')]`);
-  await driver.wait(until.elementLocated(by), 3000);
-  let button = await driver.findElement(by);
-  return button;
+  return findElementWithWait(driver, by);
 };
 
 module.exports.waitForUrl = async (driver, url) => {

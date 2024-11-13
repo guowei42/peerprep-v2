@@ -83,12 +83,12 @@ module.exports.setupMatchingTests = async (driver1, driver2) => {
     logOut(driver1),
     logOut(driver2),
     deleteAllUsers(),
+    resetQuestions(),
+    clearMatchQueue(),
     driver1.manage().deleteAllCookies(),
     driver2.manage().deleteAllCookies(),
   ]);
   await Promise.all([
-    resetQuestions(),
-    clearMatchQueue(),
     signUpAndLogIn(driver1, user1),
     signUpAndLogIn(driver2, user2),
   ]);

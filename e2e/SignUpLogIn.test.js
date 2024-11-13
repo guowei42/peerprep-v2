@@ -1,6 +1,12 @@
-let { getWebDriver, findButtonContainingText, waitForUrl, click } = require("./utils/driver");
+let {
+  getWebDriver,
+  findButtonContainingText,
+  waitForUrl,
+  click,
+  findElementWithWait,
+} = require("./utils/driver");
 let { URLS } = require("./utils/const");
-const { By, until } = require("selenium-webdriver");
+const { By } = require("selenium-webdriver");
 const { deleteAllUsers } = require("./utils/server");
 const { fillLoginForm, fillSignUpForm, signUp, resetServer } = require("./utils/utils");
 const { getNewTestUser } = require("./utils/users");
@@ -53,9 +59,6 @@ describe("Sign Up/Log In test", () => {
     // fill log in form
     await fillLoginForm(driver, TEST_USER_1);
 
-    // check redirect to root
-    await driver.wait(until.elementLocated(By.xpath(`//button[contains(text(),'Logout')]`)), 3000);
-
     // log out
     await click(await findButtonContainingText(driver, "Logout"));
 
@@ -74,7 +77,7 @@ describe("Sign Up/Log In test", () => {
       const errorMsgXpath = `//div[contains(text(),'Duplicate username or email encountered!')]`;
       await driver.get(URLS.signup);
       await fillSignUpForm(driver, TEST_USER_1);
-      await driver.wait(until.elementLocated(By.xpath(errorMsgXpath)), 3000);
+      await findElementWithWait(driver, By.xpath(errorMsgXpath));
     });
 
     test("simulate unsuccessful user log in", async () => {
@@ -87,12 +90,12 @@ describe("Sign Up/Log In test", () => {
 
       await driver.get(URLS.login);
       await fillLoginForm(driver, wrongEmail);
-      await driver.wait(until.elementLocated(By.xpath(errorMsgXpath)), 3000);
+      await findElementWithWait(driver, By.xpath(errorMsgXpath));
 
       await driver.get(URLS.root);
       await driver.get(URLS.login);
       await fillLoginForm(driver, wrongPassword);
-      await driver.wait(until.elementLocated(By.xpath(errorMsgXpath)), 3000);
+      await findElementWithWait(driver, By.xpath(errorMsgXpath));
     });
   });
 });

@@ -4,9 +4,10 @@ let {
   findTextInputWithLabel,
   fillTextInput,
   click,
+  findElementWithWait,
 } = require("./utils/driver");
 let { TEST_QUESTION } = require("./utils/const");
-const { By, until } = require("selenium-webdriver");
+const { By } = require("selenium-webdriver");
 const { startSession, setupMatchingTests, resetServer } = require("./utils/utils");
 
 describe("Chat tests", () => {
@@ -34,13 +35,7 @@ describe("Chat tests", () => {
     let chatInput1 = await findTextInputWithLabel(driver1, chatTextBoxLabel);
     await fillTextInput(driver1, chatInput1, msg);
     await click(await findButtonContainingText(driver1, "Send"));
-    await driver1.wait(
-      until.elementLocated(By.xpath(`//p[normalize-space()='You: ${msg}']`)),
-      3000
-    );
-    await driver2.wait(
-      until.elementLocated(By.xpath(`//p[normalize-space()='Partner: ${msg}']`)),
-      3000
-    );
+    await findElementWithWait(driver1, By.xpath(`//p[normalize-space()='You: ${msg}']`));
+    await findElementWithWait(driver2, By.xpath(`//p[normalize-space()='Partner: ${msg}']`));
   });
 });
