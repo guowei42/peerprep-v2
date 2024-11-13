@@ -7,11 +7,7 @@ let {
 } = require("./utils/driver");
 let { URLS, TEST_QUESTION } = require("./utils/const");
 const { By } = require("selenium-webdriver");
-const {
-  resetServer,
-  fillAddQuestionForm,
-  fillUpdateQuestionForm,
-} = require("./utils/utils");
+const { resetServer, fillAddQuestionForm, fillUpdateQuestionForm } = require("./utils/utils");
 const { getNewTestUser } = require("./utils/users");
 const { resetQuestions } = require("./utils/server");
 const { signUpAndLogIn } = require("./utils/utils");
@@ -101,7 +97,7 @@ describe("Questions test", () => {
       await click(await findElementWithWait(driver, By.xpath(updateButtonXpath)));
       await fillUpdateQuestionForm(driver, newQuestion);
       await expect(findElementWithWait(driver, By.xpath(successMsgXpath))).resolves.not.toThrow();
-
+      await driver.sleep(3000);
       // check that updated question appears in list
       await click(await findButtonContainingText(driver, "View questions"));
       let newTitleXpath = `//p[contains(normalize-space(), '${newQuestion.title}')]`;
@@ -118,7 +114,7 @@ describe("Questions test", () => {
       await click(await findElementWithWait(driver, By.xpath(updateButtonXpath)));
       await click(await findButtonContainingText(driver, "Delete Question"));
       await expect(findElementWithWait(driver, By.xpath(successMsgXpath))).resolves.not.toThrow();
-
+      await driver.sleep(3000);
       // check that deleted question disappears from list
       let titleXpath = `//p[contains(normalize-space(), '${TEST_QUESTION.title}')]`;
       await expect(findElementWithWait(driver, By.xpath(titleXpath))).rejects.toThrow();
