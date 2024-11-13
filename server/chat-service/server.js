@@ -5,6 +5,7 @@ const port = process.env.PORT || 3006; // Ensure this matches SVC_PORTS for chat
 
 const server = http.createServer();
 const io = new Server(server, {
+  path: "/chat",
   cors: {
     origin: ["http://localhost:3000", "https://peerprep-nine.vercel.app"],
     methods: "GET, POST, DELETE, PUT, PATCH",
