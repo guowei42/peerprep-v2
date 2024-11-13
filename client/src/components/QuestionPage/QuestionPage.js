@@ -1,11 +1,5 @@
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import {
-  Box,
-  Button,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+import { Box, Button, Stack, ToggleButton, ToggleButtonGroup, Grid2 } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -70,9 +64,7 @@ function QuestionPage() {
           </Stack>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography align="left">
-            Description: {wholeQuestion[1].description}
-          </Typography>
+          <Typography align="left">Description: {wholeQuestion[1].description}</Typography>
           <Typography align="left" color="secondary">
             Category: {wholeQuestion[1].categories}
           </Typography>
@@ -100,19 +92,19 @@ function QuestionPage() {
   };
 
   const handleDeleteSuccess = (deletedQuestionId) => {
-    setQuestionList((prevList) =>
-      prevList.filter((q) => q._id !== deletedQuestionId)
-    );
+    setQuestionList((prevList) => prevList.filter((q) => q._id !== deletedQuestionId));
   };
 
   return (
-    <>
-      <ToggleButtonGroup
-        value={formType}
-        exclusive
-        onChange={handleTabChange}
-        aria-label="tab"
-      >
+    <Grid2
+      container
+      spacing={3}
+      sx={{
+        padding: "35px 0",
+        justifyContent: "center",
+      }}
+    >
+      <ToggleButtonGroup value={formType} exclusive onChange={handleTabChange} aria-label="tab">
         <ToggleButton value="view" aria-label="view questions">
           View questions
         </ToggleButton>
@@ -120,7 +112,14 @@ function QuestionPage() {
           Add question
         </ToggleButton>
       </ToggleButtonGroup>
-      <Box>
+      <Grid2
+        item
+        size={12}
+        sx={{
+          justifyContent: "center",
+          textAlign: "center"
+        }}
+      >
         {formType === "add" ? (
           <AddQuestionForm goBack={() => setFormType("view")} />
         ) : formType === "update" ? (
@@ -129,9 +128,7 @@ function QuestionPage() {
             selectedQuestion={selectedQuestion}
             onUpdateSuccess={(updatedQuestion) => {
               setQuestionList((prevList) =>
-                prevList.map((q) =>
-                  q._id === updatedQuestion._id ? updatedQuestion : q
-                )
+                prevList.map((q) => (q._id === updatedQuestion._id ? updatedQuestion : q))
               );
             }}
             onDeleteSuccess={handleDeleteSuccess}
@@ -139,8 +136,8 @@ function QuestionPage() {
         ) : (
           <div>{accordionList}</div>
         )}
-      </Box>
-    </>
+      </Grid2>
+    </Grid2>
   );
 }
 
