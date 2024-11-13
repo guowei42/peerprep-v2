@@ -52,9 +52,6 @@ describe("Matching tests", () => {
       await click(await findButtonContainingText(driver2, "Start"));
       expect(await driver1.getCurrentUrl()).toEqual(URLS.root);
       expect(await driver2.getCurrentUrl()).toEqual(URLS.root);
-
-      await driver2.sleep(100);
-      await click(await findButtonContainingText(driver2, "Cancel"));
     });
   });
 
