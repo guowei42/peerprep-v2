@@ -15,7 +15,7 @@
     "socket.io-client": "^4.8.1"
   },
   "scripts": {
-    "test": "jest ./e2e/*.js --runInBand --silent=false"
+    "test": "jest ./e2e/*.js --runInBand --forceExit --silent=false"
   },
   "jest": {
     "testTimeout": 60000
