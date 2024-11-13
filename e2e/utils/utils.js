@@ -1,4 +1,4 @@
-const { By, until } = require("selenium-webdriver");
+const { By, until, Key } = require("selenium-webdriver");
 let {
   findTextInputWithLabel,
   findButtonContainingText,
@@ -121,6 +121,7 @@ const fillQuestionForm = async (driver, qn) => {
   await driver.actions().sendKeys(linkField, qn.link).perform();
   await click(complexitySelect);
   await click(await findDropDownOption(driver, "complexity-select-label", qn.complexity));
+  await driver.actions().sendKeys(Key.ESC).perform();
 };
 
 module.exports.fillAddQuestionForm = async (driver, qn) => {
