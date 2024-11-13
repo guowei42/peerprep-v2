@@ -17,13 +17,12 @@ import {
 import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SVC_ENDPOINTS } from "../../consts/api";
-import { matchingSocket } from "../../socket";
+import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
-import CircularWithValueLabel from "./CircularWithValueLabel";
+import { SVC_ENDPOINTS } from "../../consts/api";
 import { DIFFICULTY } from "../../consts/difficulty";
-import { Navigate, useNavigate } from "react-router-dom";
-import { collaborationSocket } from "../../socket";
+import { collaborationSocket, matchingSocket } from "../../socket";
+import CircularWithValueLabel from "./CircularWithValueLabel";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 

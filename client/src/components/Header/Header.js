@@ -1,22 +1,18 @@
 import {
   AppBar,
-  Toolbar,
-  Typography,
   Box,
   Button,
-  ButtonGroup,
   CircularProgress,
-  Stack,
   SvgIcon,
+  Toolbar,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assets/logo.svg";
+import { useAuth } from "../../hooks/useAuth";
 
 function Header() {
-  // TEMP
-  let navigate = useNavigate();
 
   const { isAuthenticated, checkIsAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -48,7 +44,7 @@ function Header() {
             <Link to="/logout" style={{ textDecoration: "none" }}>
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "#1976d2", color: "#fff" }}
+                sx={{ backgroundColor: "#6454F0", color: "#fff" }}
               >
                 Logout
               </Button>
@@ -57,7 +53,7 @@ function Header() {
             <Link to="/login" style={{ textDecoration: "none" }}>
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "#1976d2", color: "#fff" }}
+                sx={{ backgroundColor: "#6454F0", color: "#fff" }}
               >
                 Login
               </Button>

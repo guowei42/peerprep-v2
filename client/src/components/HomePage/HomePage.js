@@ -1,6 +1,6 @@
-import { Grid2, SvgIcon } from "@mui/material";
-import QueueCard from "./QueueCard";
+import { Grid2 } from "@mui/material";
 import BasicCard from "./BasicCard";
+import QueueCard from "./QueueCard";
 
 function HomePage() {
   return (
