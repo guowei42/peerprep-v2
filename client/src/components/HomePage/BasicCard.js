@@ -5,7 +5,13 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-export default function BasicCard({ title, description, label, link }) {
+export default function BasicCard({
+  title,
+  description,
+  label,
+  link,
+  disabledButton,
+}) {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
@@ -19,7 +25,7 @@ export default function BasicCard({ title, description, label, link }) {
         flex: "1 1 auto",
         display: "flex",
         flexDirection: "column",
-        borderRadius: "16px"
+        borderRadius: "16px",
       }}
     >
       <CardContent sx={{ flex: "1 1 auto" }}>
@@ -36,7 +42,12 @@ export default function BasicCard({ title, description, label, link }) {
         </Typography>
       </CardContent>
       <CardActions sx={{ justifyContent: "center" }}>
-        <Button size="small" variant="outlined" onClick={handleButtonClick}>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={handleButtonClick}
+          disabled={disabledButton}
+        >
           {label}
         </Button>
       </CardActions>
