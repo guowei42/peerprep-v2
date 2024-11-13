@@ -6,10 +6,10 @@ const Seed = require("../seedQuestions");
 // Test question
 const testQuestionData = {
   title: "Test Title",
-  description: "Lorem ipsum lorem sit amet",
+  description: "Lorem ipsum dolor sit amet",
   categories: "TEST",
   complexity: "Easy",
-  link: "http://localhost",
+  link: "http://localhost:3000",
 };
 
 // delete all questions
