@@ -22,7 +22,7 @@ export default function BasicCard({ title, description, label, link }) {
         borderRadius: "16px"
       }}
     >
-      <CardContent sx={{ border: "1px solid red", flex: "1 1 auto" }}>
+      <CardContent sx={{ flex: "1 1 auto" }}>
         <Typography
           variant="h4"
           component="div"
@@ -35,7 +35,7 @@ export default function BasicCard({ title, description, label, link }) {
           {description}
         </Typography>
       </CardContent>
-      <CardActions sx={{ justifyContent: "center", border: "1px solid red" }}>
+      <CardActions sx={{ justifyContent: "center" }}>
         <Button size="small" variant="outlined" onClick={handleButtonClick}>
           {label}
         </Button>
