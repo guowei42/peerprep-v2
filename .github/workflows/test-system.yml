@@ -20,6 +20,7 @@ jobs:
       DB_URI: mongodb://172.17.0.1:27017/
       DB_URI_QUESTION: mongodb://172.17.0.1:27017/question
       DB_URI_USER: mongodb://172.17.0.1:27017/user
+      NODE_OPTIONS: --max-old-space-size=4096
     steps:
       - uses: actions/checkout@v4
         with:
