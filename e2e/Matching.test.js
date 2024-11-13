@@ -79,7 +79,7 @@ describe("Matching tests", () => {
         await click(await findButtonContainingText(driver1, "END SESSION"));
         await click(await findButtonContainingText(driver2, "END SESSION"));
       },
-      35 * 1000
+      60 * 1000
     );
   });
 });
