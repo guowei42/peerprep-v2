@@ -180,7 +180,7 @@ function QueueCard() {
         flex: "1 1 auto",
         maxWidth: "30vw",
         height: "30vh",
-        borderRadius: "16px"
+        borderRadius: "16px",
       }}
     >
       <CardContent>
@@ -271,9 +271,9 @@ function QueueCard() {
                 }}
               >
                 <Typography variant="h4">Finding You A Match! :D</Typography>
-                <Divider/>
+                <Divider />
                 <CircularWithValueLabel value={progress} />
-                <Divider/>
+                <Divider />
                 <Button color="error" variant="contained" onClick={handleEnd}>
                   Cancel
                 </Button>

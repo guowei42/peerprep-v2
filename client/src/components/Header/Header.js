@@ -44,7 +44,7 @@ function Header() {
             <Link to="/logout" style={{ textDecoration: "none" }}>
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "#6454F0", color: "#fff" }}
+                sx={{ backgroundColor: "#1976d2", color: "#fff" }}
               >
                 Logout
               </Button>
@@ -53,7 +53,7 @@ function Header() {
             <Link to="/login" style={{ textDecoration: "none" }}>
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "#6454F0", color: "#fff" }}
+                sx={{ backgroundColor: "#1976d2", color: "#fff" }}
               >
                 Login
               </Button>
