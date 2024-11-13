@@ -78,7 +78,7 @@ jobs:
       - name: Run Tests
         uses: nick-fields/retry@v3
         with:
-          timeout_seconds: 100
+          timeout_minutes: 15
           max_attempts: 3
           retry_on: error
           command: xvfb-run --server-args="-screen 0 1024x768x24" npm run test
