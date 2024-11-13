@@ -1,5 +1,15 @@
-const { By, until } = require("selenium-webdriver");
-let { findTextInputWithLabel, findButtonContainingText, waitForUrl, click } = require("./driver");
+const { By, until, Key } = require("selenium-webdriver");
+let {
+  findTextInputWithLabel,
+  findButtonContainingText,
+  waitForUrl,
+  click,
+  findDropDownWithLabel,
+  findDropDownOption,
+  findTextAreaWithLabel,
+  cmdCtrl,
+  clearTextFrom,
+} = require("./driver");
 let { URLS } = require("./const");
 const { deleteAllUsers, resetQuestions, clearMatchQueue } = require("./server");
 const { getNewTestUser } = require("./users");
@@ -88,11 +98,40 @@ module.exports.setupMatchingTests = async (driver1, driver2) => {
     driver1.manage().deleteAllCookies(),
     driver2.manage().deleteAllCookies(),
   ]);
-  await Promise.all([
-    signUpAndLogIn(driver1, user1),
-    signUpAndLogIn(driver2, user2),
-  ]);
+  await Promise.all([signUpAndLogIn(driver1, user1), signUpAndLogIn(driver2, user2)]);
   await Promise.all([driver1.get(URLS.root), driver2.get(URLS.root)]);
+};
+
+const fillQuestionForm = async (driver, qn) => {
+  let titleField = await findTextInputWithLabel(driver, "Title");
+  let descriptionField = await findTextAreaWithLabel(driver, "Description");
+  let categoriesField = await findTextInputWithLabel(driver, "Categories");
+  let linkField = await findTextInputWithLabel(driver, "Link");
+  let complexitySelect = await findDropDownWithLabel(driver, "Complexity");
+
+  // clear
+  await clearTextFrom(driver, titleField);
+  await clearTextFrom(driver, descriptionField);
+  await clearTextFrom(driver, categoriesField);
+  await clearTextFrom(driver, linkField);
+
+  // enter qn
+  await driver.actions().sendKeys(titleField, qn.title).perform();
+  await driver.actions().sendKeys(descriptionField, qn.description).perform();
+  await driver.actions().sendKeys(categoriesField, qn.categories).perform();
+  await driver.actions().sendKeys(linkField, qn.link).perform();
+  await click(complexitySelect);
+  await click(await findDropDownOption(driver, "complexity-select-label", qn.complexity));
+};
+
+module.exports.fillAddQuestionForm = async (driver, qn) => {
+  await fillQuestionForm(driver, qn);
+  await click(await findButtonContainingText(driver, "Submit question"));
+};
+
+module.exports.fillUpdateQuestionForm = async (driver, qn) => {
+  await fillQuestionForm(driver, qn);
+  await click(await findButtonContainingText(driver, "Update Question"));
 };
 
 module.exports.resetServer = () =>

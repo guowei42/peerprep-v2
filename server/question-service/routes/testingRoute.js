@@ -9,8 +9,9 @@ const testQuestionData = {
   description: "Lorem ipsum dolor sit amet",
   categories: "TEST",
   complexity: "Easy",
-  link: "http://localhost:3000",
+  link: "http://localhost/",
 };
+
 
 // delete all questions
 router.get("/deleteAll", async (req, res) => {

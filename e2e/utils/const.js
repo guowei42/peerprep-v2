@@ -15,8 +15,8 @@ module.exports.URLS = {
 
 module.exports.TEST_QUESTION = {
   title: "Test Title",
-  description: "Lorem ipsum lorem sit amet",
+  description: "Lorem ipsum dolor sit amet",
   categories: "TEST",
   complexity: "Easy",
-  link: "http://localhost",
+  link: "http://localhost/",
 };
