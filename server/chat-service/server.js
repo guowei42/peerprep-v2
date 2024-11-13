@@ -36,15 +36,19 @@ io.on("connection", (socket) => {
   // Handle disconnection
   socket.on("disconnect", (reason, details) => {
     console.log("User disconnected from chat service:", socket.id);
-    console.log("Reason", reason);
-    if (details && details.message) {
-      console.log("Message", details.message);
-    }
-    if (details && details.description) {
-      console.log("Description", details.description);
-    }
-    if (details && details.context) {
-      console.log("Context", details.context);
+    if (socket.active) {
+      console.log("Reconnecting Attempt", socket);
+    } else {
+      console.log("Reason", reason);
+      if (details && details.message) {
+        console.log("Message", details.message);
+      }
+      if (details && details.description) {
+        console.log("Description", details.description);
+      }
+      if (details && details.context) {
+        console.log("Context", details.context);
+      }
     }
   });
 });

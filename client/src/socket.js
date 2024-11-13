@@ -5,9 +5,8 @@ const isProduction =
   process.env.REACT_APP_API_BASE_URL &&
   process.env.REACT_APP_API_BASE_URL !== "http://localhost";
 
-let settings = {
+const settings = {
   autoConnect: false,
-  reconnectionAttempts: 5,
 };
 
 export const matchingSocket = isProduction
