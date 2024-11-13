@@ -17,13 +17,12 @@ import {
 import { toggleButtonGroupClasses } from "@mui/material/ToggleButtonGroup";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SVC_ENDPOINTS } from "../../consts/api";
-import { matchingSocket } from "../../socket";
+import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
-import CircularWithValueLabel from "./CircularWithValueLabel";
+import { SVC_ENDPOINTS } from "../../consts/api";
 import { DIFFICULTY } from "../../consts/difficulty";
-import { Navigate, useNavigate } from "react-router-dom";
-import { collaborationSocket } from "../../socket";
+import { collaborationSocket, matchingSocket } from "../../socket";
+import CircularWithValueLabel from "./CircularWithValueLabel";
 
 const steps = ["Difficulty", "Topic", "Start Queue"];
 
@@ -113,7 +112,7 @@ function QueueCard() {
     clearInterval(timer);
     const timerId = setInterval(() => {
       setProgress((prevProgress) =>
-        prevProgress <= 0 ? 0 : prevProgress - 10 / 3
+        prevProgress <= 0 ? 0 : Math.max(0, prevProgress - 10 / 3)
       );
     }, 1000);
     setTimer(timerId);
@@ -150,7 +149,12 @@ function QueueCard() {
       handleEnd();
       console.log(queueState);
       navigate("/collaborationpage", {
-        state: { partnerId: temp_partnerId, roomId: temp_roomId, topic: topic, complexity: temp_complexity},
+        state: {
+          partnerId: temp_partnerId,
+          roomId: temp_roomId,
+          topic: topic,
+          complexity: temp_complexity,
+        },
       });
     }
     return () => {
@@ -170,7 +174,14 @@ function QueueCard() {
   return (
     <Card
       variant="outlined"
-      sx={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        flex: "1 1 auto",
+        maxWidth: "30vw",
+        height: "30vh",
+        borderRadius: "16px",
+      }}
     >
       <CardContent>
         <Stepper activeStep={activeStep}>
@@ -184,32 +195,38 @@ function QueueCard() {
       <Divider />
       <CardContent sx={{ flex: "1 1 auto" }}>
         {activeStep === 0 && (
-           <Box
-           sx={{
-             display: "flex",
-             justifyContent: "center", // Centers horizontally
-             alignItems: "center", // Centers vertically
-             height: "100%", // Ensures full height for vertical centering
-           }}
-         >
-          <ToggleButtonGroup
-            value={difficulty}
-            onChange={handleDifficultyChange}
-            exclusive
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center", // Centers horizontally
+              alignItems: "center", // Centers vertically
+              height: "100%", // Ensures full height for vertical centering
+            }}
           >
-            <ToggleButton value={DIFFICULTY.easy} aria-label={DIFFICULTY.easy}>
-              Easy
-            </ToggleButton>
-            <ToggleButton
-              value={DIFFICULTY.medium}
-              aria-label={DIFFICULTY.medium}
+            <ToggleButtonGroup
+              value={difficulty}
+              onChange={handleDifficultyChange}
+              exclusive
             >
-              Medium
-            </ToggleButton>
-            <ToggleButton value={DIFFICULTY.hard} aria-label={DIFFICULTY.hard}>
-              Hard
-            </ToggleButton>
-          </ToggleButtonGroup>
+              <ToggleButton
+                value={DIFFICULTY.easy}
+                aria-label={DIFFICULTY.easy}
+              >
+                Easy
+              </ToggleButton>
+              <ToggleButton
+                value={DIFFICULTY.medium}
+                aria-label={DIFFICULTY.medium}
+              >
+                Medium
+              </ToggleButton>
+              <ToggleButton
+                value={DIFFICULTY.hard}
+                aria-label={DIFFICULTY.hard}
+              >
+                Hard
+              </ToggleButton>
+            </ToggleButtonGroup>
           </Box>
         )}
         {activeStep === 1 && (
@@ -235,56 +252,67 @@ function QueueCard() {
         )}
         {activeStep === 2 && (
           <Box
-          sx={{
-            display: "flex",
-            flexDirection: 'column', 
-            justifyContent: "center", 
-            alignItems: "center", 
-            height: "100%", 
-          }}
-        >
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
             {queueLoading && (
               <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column', 
-                justifyContent: 'center',
-                alignItems: 'center', 
-                height: '100%', 
-              }}
-            >
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+              >
                 <Typography variant="h4">Finding You A Match! :D</Typography>
+                <Divider />
                 <CircularWithValueLabel value={progress} />
-                <Button color="error" variant="contained" onClick={handleEnd}>Cancel</Button>
+                <Divider />
+                <Button color="error" variant="contained" onClick={handleEnd}>
+                  Cancel
+                </Button>
               </Box>
             )}
             {!queueLoading && queueState.status === "timeout" && (
-              
               <Typography variant="h4">No Match Found! D:</Typography>
-        
             )}
-            {queueLoading || collaborationSocket.connected && (
-              <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column', 
-                justifyContent: 'center',
-                alignItems: 'center', 
-                height: '100%', 
-              }}
-            >
-                <BlurredButton variant="contained" >Start</BlurredButton>
-                <p>Please end all ongoing session before matching again!</p>
-              </Box>
-            )}
-            {!queueLoading && queueState.status === "timeout"  && !collaborationSocket.connected && (
-              <Button variant="contained" onClick={handleStartQueue}>Retry</Button>
-            )}
-            {!queueLoading && queueState.status !== "timeout" && !collaborationSocket.connected && (
-              <div>
-                <Button variant="contained" onClick={handleStartQueue}>Start</Button>
-              </div>
-            )}
+            {queueLoading ||
+              (collaborationSocket.connected && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <BlurredButton variant="contained">Start</BlurredButton>
+                  <p>Please end all ongoing session before matching again!</p>
+                </Box>
+              ))}
+            {!queueLoading &&
+              queueState.status === "timeout" &&
+              !collaborationSocket.connected && (
+                <Button variant="contained" onClick={handleStartQueue}>
+                  Retry
+                </Button>
+              )}
+            {!queueLoading &&
+              queueState.status !== "timeout" &&
+              !collaborationSocket.connected && (
+                <div>
+                  <Button variant="contained" onClick={handleStartQueue}>
+                    Start
+                  </Button>
+                </div>
+              )}
           </Box>
         )}
         {error && <Typography color="error">{error}</Typography>}

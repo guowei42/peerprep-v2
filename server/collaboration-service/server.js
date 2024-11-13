@@ -11,8 +11,8 @@ const io = new Server(server, {
     methods: "GET, POST, DELETE, PUT, PATCH",
     allowedHeaders:
       "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie",
-    credentials: true
-  },
+    credentials: true,
+  }
 });
 
 io.on("connection", (socket) => {
@@ -28,8 +28,22 @@ io.on("connection", (socket) => {
     socket.to(roomName).emit("code_update", code);
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason, details) => {
     console.log("Client disconnected");
+    if (socket.active) {
+      console.log("Reconnecting Attempt", socket);
+    } else {
+      console.log("Reason", reason);
+      if (details && details.message) {
+        console.log("Message", details.message);
+      }
+      if (details && details.description) {
+        console.log("Description", details.description);
+      }
+      if (details && details.context) {
+        console.log("Context", details.context);
+      }
+    }
   });
 });
 

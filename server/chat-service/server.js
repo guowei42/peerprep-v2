@@ -12,7 +12,7 @@ const io = new Server(server, {
     allowedHeaders:
       "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie",
     credentials: true,
-  },
+  }
 });
 
 io.on("connection", (socket) => {
@@ -34,8 +34,22 @@ io.on("connection", (socket) => {
   });
 
   // Handle disconnection
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason, details) => {
     console.log("User disconnected from chat service:", socket.id);
+    if (socket.active) {
+      console.log("Reconnecting Attempt", socket);
+    } else {
+      console.log("Reason", reason);
+      if (details && details.message) {
+        console.log("Message", details.message);
+      }
+      if (details && details.description) {
+        console.log("Description", details.description);
+      }
+      if (details && details.context) {
+        console.log("Context", details.context);
+      }
+    }
   });
 });
 

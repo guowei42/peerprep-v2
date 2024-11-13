@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: chat-service
   annotations:
-    cloud.google.com/backend-config: '{"default": "chat-service-backendconfig"}'
+    cloud.google.com/backend-config: '{"ports": {"3006":"chat-service-backendconfig"}}'
   labels:
     app: chat-service
 spec:
@@ -14,3 +14,5 @@ spec:
     - name: chat-service
       port: 3006
       targetPort: 3006
+
+      
