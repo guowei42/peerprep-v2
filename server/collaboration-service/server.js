@@ -28,8 +28,12 @@ io.on("connection", (socket) => {
     socket.to(roomName).emit("code_update", code);
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason, details) => {
     console.log("Client disconnected");
+    console.log("Reason", reason);
+    console.log("Message", details.message);
+    console.log("Description", details.description);
+    console.log("Context", details.context);
   });
 });
 

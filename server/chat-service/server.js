@@ -34,8 +34,12 @@ io.on("connection", (socket) => {
   });
 
   // Handle disconnection
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason, details) => {
     console.log("User disconnected from chat service:", socket.id);
+    console.log("Reason", reason);
+    console.log("Message", details.message);
+    console.log("Description", details.description);
+    console.log("Context", details.context);
   });
 });
 
