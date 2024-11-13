@@ -50,9 +50,10 @@ describe("Matching tests", () => {
       await click(await findButtonContainingText(driver1, "Cancel"));
       await driver2.sleep(500);
       await click(await findButtonContainingText(driver2, "Start"));
-      expect(await driver1.getCurrentUrl()).toEqual(URLS.root + "/");
-      expect(await driver2.getCurrentUrl()).toEqual(URLS.root + "/");
+      expect(await driver1.getCurrentUrl()).toEqual(URLS.root);
+      expect(await driver2.getCurrentUrl()).toEqual(URLS.root);
 
+      await driver2.sleep(100);
       await click(await findButtonContainingText(driver2, "Cancel"));
     });
   });
@@ -68,8 +69,8 @@ describe("Matching tests", () => {
         await click(await findButtonContainingText(driver1, "Start"));
         await waitUntilMatchingTimeout(driver1, driver2);
         await click(await findButtonContainingText(driver2, "Start"));
-        expect(await driver1.getCurrentUrl()).toEqual(URLS.root + "/");
-        expect(await driver2.getCurrentUrl()).toEqual(URLS.root + "/");
+        expect(await driver1.getCurrentUrl()).toEqual(URLS.root);
+        expect(await driver2.getCurrentUrl()).toEqual(URLS.root);
 
         // retry - success
         await click(await findButtonContainingText(driver1, "Retry"));
