@@ -262,6 +262,8 @@ function CollaborationPage() {
                   padding: "10px",
                   marginTop: "20px",
                   backgroundColor: "#f5f5f5",
+                  maxHeight: "300px",
+                  overflowY: "auto"
                 }}
               >
                 <Typography variant="h6">Gemini Response:</Typography>
