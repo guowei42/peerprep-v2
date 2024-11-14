@@ -1,4 +1,4 @@
-import { Grid2, Box, styled, TextField } from "@mui/material";
+import { Grid2, Box, styled, TextField, Stack, Hidden } from "@mui/material";
 import { ReactComponent as Background } from "../../assets/background.svg";
 import { ReactComponent as Logo } from "../../assets/logo.svg";
 
@@ -13,7 +13,6 @@ export const LoginBox = styled(Box)({
   justifyContent: "space-evenly",
   minHeight: "580px",
   minWidth: "455px",
-  height: "100%",
   alignItems: "center",
   backgroundColor: "#E7E2E2",
   borderRadius: "10px",
@@ -21,19 +20,16 @@ export const LoginBox = styled(Box)({
 
 function LoginWrapper({ children }) {
   return (
-    <Grid2
-      container
-      spacing={3}
-      sx={{
-        padding: "35px",
-        justifyContent: "center",
-        height: "100vh",
-      }}
+    <Stack
+      direction={"row"}
+      height={"100vh"}
+      justifyContent={"center"}
+      alignItems={"center"}
     >
       <Grid2 item size={{ xs: 12, md: 6 }}>
         {children}
       </Grid2>
-      <Grid2 item size={{ xs: 12, md: 6 }} position={"relative"}>
+      <Grid2 item size={{ xs: 12, md: 6 }} position={"relative"} sx={{display: {sm: "none", md: "block"}}}>
         <Box zIndex={"1"} height={"100%"}>
           <Background />
         </Box>
@@ -50,7 +46,7 @@ function LoginWrapper({ children }) {
           <Logo />
         </Box>
       </Grid2>
-    </Grid2>
+    </Stack>
   );
 }
 
