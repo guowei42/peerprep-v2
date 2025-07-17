@@ -74,19 +74,6 @@ services:
     environment:
       - ENV
       - REDIS_URL=redis://matching-redis:6379
-  ai-service:
-    build:
-      context: ./ai-service
-      dockerfile: Dockerfile
-      args:
-        - PORT=${PORT_AI}
-    ports:
-      - ${PORT_AI}:${PORT_AI}
-    networks:
-      - backend
-    environment:
-      - ENV
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
   chat-service:
     build: 
       context: ./chat-service
@@ -100,8 +87,22 @@ services:
     environment:
       - ENV
 
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+    volumes:
+      - mongo-data:/data/db
+
 networks:
   matching:
     driver: bridge
   backend:
     driver: bridge
+
+volumes:
+  mongo-data:

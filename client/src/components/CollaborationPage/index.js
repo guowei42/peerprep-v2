@@ -32,9 +32,6 @@ function CollaborationPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [value, setValue] = useState("");
   const [question, setQuestion] = useState(null);
-  const [aiText, setAiText] = useState(null);
-  const [aiResponse, setAiReponse] = useState(null);
-  const [isAiLoading, setisAiLoading] = useState(false);
   // for chat
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
@@ -60,20 +57,6 @@ function CollaborationPage() {
     setValue("");
     setIsLoading(true);
     navigate("/", { replace: true, state: null });
-  };
-
-  const handleAi = async () => {
-    const payload = {
-      prompt: aiText,
-      topic: question.title,
-      description: question.description,
-      code: cookies.get("code"),
-    };
-    setAiReponse(null);
-    setisAiLoading(true);
-    const response = await axios.post(`${SVC_ENDPOINTS.ai}/ai/prompt`, payload);
-    setisAiLoading(false);
-    setAiReponse(response.data);
   };
 
   // handle a message send
@@ -246,60 +229,6 @@ function CollaborationPage() {
           </Button>
         </Box>
       </div>
-
-      <Fab
-        sx={{ position: "absolute", top: 100, right: 60 }}
-        onClick={toggleDrawer(true)}
-      >
-        <AssistantRoundedIcon />
-      </Fab>
-      <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer(false)}>
-        <Box sx={{ padding: "20px", width: "500px" }}>
-          {aiResponse !== null && (
-            <Box>
-              <Paper
-                style={{
-                  padding: "10px",
-                  marginTop: "20px",
-                  backgroundColor: "#f5f5f5",
-                  maxHeight: "300px",
-                  overflowY: "auto"
-                }}
-              >
-                <Typography variant="h6">Gemini Response:</Typography>
-                <Typography style={{ whiteSpace: "pre-line" }}>
-                  {aiResponse}
-                </Typography>
-              </Paper>
-            </Box>
-          )}
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: 20,
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              paddingTop: "20px",
-              width: "92%",
-            }}
-          >
-            <TextField
-              fullWidth
-              label="Ask Gemini"
-              id="fullWidth"
-              onChange={(e) => setAiText(e.target.value)}
-            />
-            {isAiLoading ? (
-              <CircularProgress />
-            ) : (
-              <Button variant="contained" onClick={handleAi}>
-                <SendIcon />
-              </Button>
-            )}
-          </Box>
-        </Box>
-      </Drawer>
     </div>
   );
 }
