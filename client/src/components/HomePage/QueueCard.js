@@ -103,7 +103,7 @@ function QueueCard() {
   const handleStartQueue = () => {
     if (!matchingSocket.connected) {
       matchingSocket.connect();
-      matchingSocket.emit("connection");
+      //matchingSocket.emit("connection");
       console.log("User connected to matchingSocket");
     }
     setProgress(100);
@@ -120,7 +120,7 @@ function QueueCard() {
     const userId = cookies.get("userId");
     matchingSocket.emit("requestMatch", {
       userId: userId,
-      topic: topic.category,
+      topic: topic,
       difficulty: difficulty,
     });
 

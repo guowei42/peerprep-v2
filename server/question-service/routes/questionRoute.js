@@ -60,6 +60,7 @@ router.get("/categories/unique", async (req, res) => {
 
             ]
         );
+        console.log(uniqueCategories)
         res.status(200).json(uniqueCategories);
     } catch (error) {
         res.status(500).json({ message: error.message });

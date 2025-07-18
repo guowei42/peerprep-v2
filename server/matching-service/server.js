@@ -35,13 +35,19 @@ connectRedis();
 
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
+  
+  socket.onAny((event, ...args) => {
+    console.log(`Received event: ${event}`, args);
+  });
 
   socket.on("requestMatch", async ({ userId, topic, difficulty }) => {
+    console.log(`Logging request`);
     socket.userId = userId;
     socket.topic = topic;
     socket.difficulty = difficulty;
 
     await redisClient.rPush(`${topic}`, JSON.stringify({ userId, difficulty }));
+    console.log("Requesing match", topic, userId, difficulty)
 
     socket.timeoutId = setTimeout(async () => {
       removeUser(userId, topic, difficulty);
@@ -57,6 +63,7 @@ io.on("connection", (socket) => {
     }, 30000);
 
     const match = await findMatch(userId, topic, difficulty);
+    console.log("finding match", topic, userId, difficulty)
     if (match) {
       clearTimeout(socket.timeoutId);
       const room_id = randomUUID();
